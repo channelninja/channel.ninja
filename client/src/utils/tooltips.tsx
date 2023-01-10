@@ -23,7 +23,7 @@ export const tooltips = {
     onClick: () => void
   ) => (
     <p>
-      Found {nodeCount} nodes. Pay the invoice to continue.
+      Found {nodeCount} nodes. Pay the invoice (1000sats) to continue.
       <br />
       <br />
       <QRCodeSVG onClick={onClick} value={invoice.request} size={260} />
