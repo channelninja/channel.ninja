@@ -1,0 +1,33 @@
+@font-face {
+  font-family: Pixeloid;
+  src: url(../../public/fonts/PixeloidSansBold.ttf);
+}
+
+html {
+  font-size: 62.5%;
+  font-family: 'Courier New', Courier, monospace;
+  color: #fff;
+  height: 100vh;
+}
+
+body { font-size: 1.4rem; /* =14px */
+  background-color: #2e333b;
+  height: 100%;
+}
+
+#root {
+  display: flex;
+  position: relative;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+input, button {
+  color: #000;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 0;
+  padding: 0;
+}

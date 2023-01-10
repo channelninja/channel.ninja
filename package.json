@@ -1,0 +1,21 @@
+{
+  "name": "channel.ninja",
+  "private": true,
+  "workspaces": ["server", "client"],
+  "version": "0.1.0",
+  "description": "",
+  "main": "server/dist/main.js",
+  "scripts": {
+    "start:server": "npm run start:dev --prefix server",
+    "start:client": "npm run start --prefix client",
+    "build": "npm run build --prefix client && npm run build --prefix server",
+    "start:dev": "concurrently -n client,server -c magenta,cyan \"npm run start:client\" \"npm run start:server\"",
+    "start:prod": "npm run start:prod --prefix server"
+  },
+  "author": "",
+  "license": "MIT",
+  "types": "./server/dist/main.d.ts",
+  "devDependencies": {
+    "concurrently": "^7.6.0"
+  }
+}

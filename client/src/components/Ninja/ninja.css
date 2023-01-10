@@ -1,0 +1,29 @@
+.ninja {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+}
+
+.ninja__tooltip {
+  background-color: #fff;
+    position: absolute;
+    bottom: 13rem;
+    left: 0;
+    width: 30rem;
+    color: #000;
+    padding: 2rem;
+    border-radius: 1.4rem;
+    word-break: break-word;
+}
+
+.ninja__tooltip::after {
+  content: '';
+  width: 0;
+  height: 0;
+  border-left: 1.5rem solid transparent;
+  border-right: 1.5rem solid transparent;
+  border-top: 1.5rem solid #fff;
+  position: absolute;
+  bottom: -1rem;
+  left: 4rem;
+}

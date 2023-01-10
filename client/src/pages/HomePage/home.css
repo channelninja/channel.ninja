@@ -1,0 +1,73 @@
+.home {
+  height: 80%;
+  width: 80%;
+  display: flex;
+}
+
+
+.home__ninja {
+  position: relative;
+  flex: 0 0 35rem;
+}
+
+.home__content {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  max-width: 70rem;
+}
+
+.home__content-inner {
+  overflow-y: auto;
+}
+
+.home__form {
+  margin-bottom: 3rem;
+  border: 2px dashed #000;
+}
+
+.home__title {
+  font-family: Pixeloid;
+  font-size: 5rem;
+  color: #f2a900;
+  text-shadow: -4px 0 black, 0 4px black, 4px 0 black, 0 -4px black;
+  margin-bottom: 2rem;
+}
+
+.home__title--beta {
+  color: #fff;
+  font-size: 2rem;
+}
+
+
+@media (max-width: 768px) {
+  .home {
+    height: 100%;
+    width: 100%;
+    flex-direction: column-reverse;
+    padding: 1rem;
+  }
+
+  .home__content {
+    overflow: auto;
+  }
+
+  .home__ninja {
+    position: relative;
+    flex: 0 0 0rem;
+  }
+
+  .home__form {
+    margin-bottom: 1rem;
+  }
+
+  .home__title {
+    font-size: 3rem;
+    margin-right: auto;
+    margin-left: auto;
+  }
+
+  .home__title--beta {
+    font-size: 1.4rem;
+  }
+}

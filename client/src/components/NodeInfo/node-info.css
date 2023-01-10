@@ -1,0 +1,20 @@
+.node-info__headline {
+  margin-bottom: 2rem;
+}
+
+.node-info__dl-wrap {
+  display: flex;
+  margin-bottom: 1rem;
+}
+
+.node-info__definition-term {
+  margin-right: 1rem;
+}
+
+.node-info__definition-data {
+  word-break: break-all;
+}
+
+.node-info__definition-term::after {
+  content: ':'
+}
