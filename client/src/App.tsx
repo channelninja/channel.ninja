@@ -3,6 +3,7 @@ import { useSockets } from "./context/useSocket";
 import HomePage from "./pages/HomePage/HomePage";
 import { socketChanged } from "./redux/global-slice";
 import { useAppDispatch } from "./redux/hooks";
+import { throttle } from "throttle-debounce";
 
 function App() {
   const socket = useSockets();
@@ -22,6 +23,27 @@ function App() {
       socket?.off("disconnect");
     };
   }, [socket, dispatch]);
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (document.documentElement) {
+        document.documentElement.style.setProperty(
+          "--document-height",
+          `${window.innerHeight}px`
+        );
+      }
+    };
+
+    const throttledHandleResize = throttle(200, handleResize);
+
+    window.addEventListener("resize", throttledHandleResize);
+
+    handleResize();
+
+    return () => {
+      window.removeEventListener("resize", throttledHandleResize);
+    };
+  }, []);
 
   return <HomePage />;
 }
