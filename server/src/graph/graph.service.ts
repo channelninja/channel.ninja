@@ -149,12 +149,16 @@ export class GraphService {
           queue.push(partner);
 
           const channelCount = partner.partners.size;
+          const lastUpdateInLessThatTwoWeeks =
+            process.env.NODE_ENV !== 'production'
+              ? true
+              : Date.now() - partner.lastUpdate <= TWO_WEEKS;
 
           if (
             distance >= MIN_DISTANCE &&
             channelCount <= MAX_CHANNELS &&
             channelCount >= MIN_CHANNELS &&
-            Date.now() - partner.lastUpdate <= TWO_WEEKS // last update in less than 2 weeks
+            lastUpdateInLessThatTwoWeeks
           ) {
             response.unshift({
               alias: partner.alias || 'unknown',
