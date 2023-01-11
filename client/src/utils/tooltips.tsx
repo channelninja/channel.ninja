@@ -26,7 +26,7 @@ export const tooltips = {
       Found {nodeCount} nodes. Pay the invoice (1000sats) to continue.
       <br />
       <br />
-      <QRCodeSVG onClick={onClick} value={invoice.request} size={260} />
+      <QRCodeSVG onClick={onClick} value={`lightning:${invoice.request}`} size={260} />
     </p>
   ),
   NO_NODES_FOUND: <p>No nodes found. Try again later.</p>,
