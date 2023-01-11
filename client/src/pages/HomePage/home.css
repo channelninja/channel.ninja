@@ -39,6 +39,17 @@
   font-size: 2rem;
 }
 
+.home__github {
+  position: absolute;
+  bottom: 2rem;
+  right: 2rem;
+}
+
+.home__github-image {
+  width: 3rem;
+  height: 3rem;
+}
+
 
 @media (max-width: 768px) {
   .home {
@@ -50,6 +61,7 @@
 
   .home__content {
     overflow: auto;
+    padding-bottom: 11rem;
   }
 
   .home__ninja {

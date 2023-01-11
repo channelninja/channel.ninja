@@ -172,6 +172,12 @@ const HomePage = () => {
           )}
         </div>
       </div>
+
+      <div className="home__github">
+        <a href="https://github.com/channelninja/channel.ninja" target='_blank' rel="noreferrer">
+          <img className="home__github-image" src='/github-mark-white.svg' alt='github logo' />
+        </a>
+      </div>
     </div>
   );
 };
