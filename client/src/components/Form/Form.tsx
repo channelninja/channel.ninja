@@ -12,7 +12,7 @@ const Form = ({
     if (pubKey) {
       onSubmit({ pubKey });
     }
-  }, [pubKey]);
+  }, [pubKey, onSubmit]);
 
   return (
     <form className="form">

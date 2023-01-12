@@ -5,6 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { GraphModule } from './graph/graph.module';
 import { LndModule } from './lnd/lnd.module';
 import { StaticModule } from './static/static.module';
+import { SuggestionsModule } from './suggestions/suggestions.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { StaticModule } from './static/static.module';
     ScheduleModule.forRoot(),
     GraphModule,
     LndModule,
+    SuggestionsModule,
   ],
 })
 export class AppModule {}

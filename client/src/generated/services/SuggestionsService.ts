@@ -1,26 +1,26 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { GraphResponseDto } from '../models/GraphResponseDto';
+import type { NodeResponseDto } from '../models/NodeResponseDto';
 
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
 
-export class GraphService {
+export class SuggestionsService {
 
     /**
-     * Returns the graph
+     * Returns suggested nodes for :start node
      * @param start
-     * @returns GraphResponseDto
+     * @returns NodeResponseDto
      * @throws ApiError
      */
-    public static getGraph(
+    public static getSuggestions(
         start: string,
-    ): CancelablePromise<GraphResponseDto> {
+    ): CancelablePromise<Array<NodeResponseDto>> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/api/graph/network/{start}',
+            url: '/api/suggestions/{start}',
             path: {
                 'start': start,
             },

@@ -57,8 +57,10 @@ const NodeInfo = ({
         <div className="node-info__dl-wrap">
           <dt className="node-info__definition-term">sockets</dt>
           <div>
-            {nodeInfo.sockets.map((socket) => (
-              <dd className="node-info__definition-data">{socket.socket}</dd>
+            {nodeInfo.sockets.map((socket, index) => (
+              <dd key={index} className="node-info__definition-data">
+                {socket.socket}
+              </dd>
             ))}
           </div>
         </div>

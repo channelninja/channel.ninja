@@ -1,4 +1,3 @@
-import { GetNodeResult } from "lightning";
 import { useCallback, useEffect, useRef } from "react";
 import "react-input-range/lib/css/index.css";
 import Form from "../../components/Form";
@@ -7,12 +6,7 @@ import Ninja from "../../components/Ninja";
 import Node from "../../components/Node";
 import NodeInfo from "../../components/NodeInfo";
 import { useSockets } from "../../context/useSocket";
-import { LndInvoiceResponseDto } from "../../dto/lnd-invoice-response.dto";
-import {
-  EdgeResponseDto,
-  GraphResponseDto,
-  NodeResponseDto,
-} from "../../generated";
+import { LndService, SuggestionsService } from "../../generated";
 import {
   invalidPubkey,
   invoiceFetched,
@@ -32,11 +26,6 @@ export enum TooltipState {
   NINJA_HOVERED = "NINJA_HOVERED",
   NINJA_CLICKED = "NINJA_CLICKED",
 }
-
-export type GraphData = {
-  links: EdgeResponseDto[];
-  nodes: NodeResponseDto[];
-};
 
 const HomePage = () => {
   const socket = useSockets();
@@ -69,20 +58,16 @@ const HomePage = () => {
   }, [state.invoice, dispatch, socket, state.invoicePaid]);
 
   const getInvoice = useCallback(async () => {
-    fetch("/api/lnd/invoice", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-      .then((data) => data.json())
-      .then((invoice: LndInvoiceResponseDto) => {
-        if (invoice.isPaid) {
-          dispatch(invoicePaid());
-        } else {
-          dispatch(invoiceFetched(invoice));
-        }
-      });
+    try {
+      const invoice = await LndService.createInvoice();
+      if (invoice.isPaid) {
+        dispatch(invoicePaid());
+      } else {
+        dispatch(invoiceFetched(invoice));
+      }
+    } catch (error) {
+      console.error(error);
+    }
   }, [dispatch]);
 
   useEffect(() => {
@@ -103,39 +88,43 @@ const HomePage = () => {
     }
   }, [state.invoice, state.invoicePaid, state.nodes, getInvoice]);
 
-  const fetchGraph = async ({ pubKey }: { pubKey: string }) => {
-    const data = await fetch(`/api/graph/network/${pubKey}`);
-    const jsonData: GraphResponseDto = await data.json();
-    const nodes = jsonData.nodes.map((node) => ({
-      ...node,
-      size: (node.channelCount * node.channelCount) / 2,
-    }));
+  const fetchSuggestions = useCallback(
+    async ({ pubKey }: { pubKey: string }) => {
+      const response = await SuggestionsService.getSuggestions(pubKey);
 
-    dispatch(nodesFetched(nodes));
-  };
+      const nodes = response.map((node) => ({
+        ...node,
+        size: (node.channelCount * node.channelCount) / 2,
+      }));
 
-  const handleFormSubmit = async ({ pubKey }: { pubKey: string }) => {
-    try {
-      const data = await fetch(`/api/lnd/nodeInfo/${pubKey}`);
+      dispatch(nodesFetched(nodes));
+    },
+    [dispatch]
+  );
 
-      const nodeInfo = (await data.json()) as GetNodeResult;
+  const handleFormSubmit = useCallback(
+    async ({ pubKey }: { pubKey: string }) => {
+      try {
+        const nodeInfo = await LndService.getNodeInfo(pubKey);
 
-      if (!data.ok || !nodeInfo) {
-        dispatch(invalidPubkey());
-        setTimeout(() => dispatch(resetTooltip()), 3000);
-        return;
+        if (!nodeInfo) {
+          dispatch(invalidPubkey());
+          setTimeout(() => dispatch(resetTooltip()), 3000);
+          return;
+        }
+
+        dispatch(nodeInfoChanged(nodeInfo));
+        dispatch(validPubKeyEntered(pubKey));
+
+        await fetchSuggestions({
+          pubKey,
+        });
+      } catch (error) {
+        console.log(error);
       }
-
-      dispatch(nodeInfoChanged(nodeInfo));
-      dispatch(validPubKeyEntered(pubKey));
-
-      await fetchGraph({
-        pubKey,
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  };
+    },
+    [dispatch, fetchSuggestions]
+  );
 
   return (
     <div className="home">
@@ -174,8 +163,16 @@ const HomePage = () => {
       </div>
 
       <div className="home__github">
-        <a href="https://github.com/channelninja/channel.ninja" target='_blank' rel="noreferrer">
-          <img className="home__github-image" src='/github-mark-white.svg' alt='github logo' />
+        <a
+          href="https://github.com/channelninja/channel.ninja"
+          target="_blank"
+          rel="noreferrer"
+        >
+          <img
+            className="home__github-image"
+            src="/github-mark-white.svg"
+            alt="github logo"
+          />
         </a>
       </div>
     </div>
