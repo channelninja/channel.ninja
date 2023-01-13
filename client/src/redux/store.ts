@@ -1,9 +1,11 @@
 import { configureStore } from "@reduxjs/toolkit";
+import tooltipSlice from "../components/Ninja/tooltip-slice";
 import globalSlice from "./global-slice";
 
 export const store = configureStore({
   reducer: {
     global: globalSlice,
+    tooltip: tooltipSlice,
   },
 });
 

@@ -3,17 +3,19 @@ import "react-input-range/lib/css/index.css";
 import Form from "../../components/Form";
 import ListItem from "../../components/ListItem";
 import Ninja from "../../components/Ninja";
+import {
+  invalidPubKey,
+  resetTooltip,
+} from "../../components/Ninja/tooltip-slice";
 import Node from "../../components/Node";
 import NodeInfo from "../../components/NodeInfo";
 import { useSockets } from "../../context/useSocket";
 import { LndService, SuggestionsService } from "../../generated";
 import {
-  invalidPubkey,
   invoiceFetched,
   invoicePaid,
   nodeInfoChanged,
   nodesFetched,
-  resetTooltip,
   validPubKeyEntered,
 } from "../../redux/global-slice";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
@@ -108,7 +110,7 @@ const HomePage = () => {
         const nodeInfo = await LndService.getNodeInfo(pubKey);
 
         if (!nodeInfo) {
-          dispatch(invalidPubkey());
+          dispatch(invalidPubKey());
           setTimeout(() => dispatch(resetTooltip()), 3000);
           return;
         }

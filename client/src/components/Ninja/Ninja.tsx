@@ -1,18 +1,11 @@
-import React, { useState } from "react";
-import {
-  invoicePaid,
-  ninjaClicked,
-  ninjaMouseEntered,
-  qrCodeClicked,
-  resetTooltip,
-} from "../../redux/global-slice";
-import { useAppDispatch, useAppSelector } from "../../redux/hooks";
-import { tooltips, TooltipState } from "../../utils/tooltips";
+import { useState } from "react";
+import { useAppDispatch } from "../../redux/hooks";
 import "./ninja.css";
+import SpeechBubble from "./SpeechBubble";
+import { ninjaClicked, ninjaMouseEntered, resetTooltip } from "./tooltip-slice";
 
 const Ninja = () => {
   const dispatch = useAppDispatch();
-  const state = useAppSelector((state) => state.global);
   const [isHidden, setIsHidden] = useState(false);
 
   const handleNinjaMouseEnter = () => {
@@ -40,34 +33,12 @@ const Ninja = () => {
     }
   };
 
-  const handleQRCodeClick = async () => {
-    await navigator.clipboard.writeText(state.invoice?.request || "");
-
-    dispatch(qrCodeClicked());
-    setTimeout(() => dispatch(resetTooltip()), 3000);
-
-    if (process.env.NODE_ENV !== "production") {
-      setTimeout(() => dispatch(invoicePaid()), 5000);
-    }
-  };
-
-  let tooltip = state.tooltip && (tooltips[state.tooltip] as React.ReactNode);
-
-  if (state.tooltip === TooltipState.QR_CODE && state.nodes && state.invoice) {
-    tooltip = tooltips[state.tooltip](
-      state.nodes.length,
-      state.invoice,
-      handleQRCodeClick
-    );
-  }
-
   return (
     <div className="ninja">
-      {tooltip && !isHidden ? (
-        <div className="ninja__tooltip">{tooltip}</div>
-      ) : null}
+      {!isHidden ? <SpeechBubble /> : null}
 
       <img
+        className="ninja__image"
         src="/logo192.png"
         alt="logo"
         width={100}

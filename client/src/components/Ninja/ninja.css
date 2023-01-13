@@ -4,7 +4,11 @@
   bottom: 0;
 }
 
-.ninja__tooltip {
+.ninja__image {
+  cursor: pointer;
+}
+
+.ninja__speech-bubble {
   background-color: #fff;
     position: absolute;
     bottom: 13rem;
@@ -16,7 +20,7 @@
     word-break: break-word;
 }
 
-.ninja__tooltip::after {
+.ninja__speech-bubble::after {
   content: '';
   width: 0;
   height: 0;

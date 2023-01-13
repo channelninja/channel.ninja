@@ -1,14 +1,12 @@
-import type { PayloadAction } from "@reduxjs/toolkit";
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import {
   LndInvoiceResponseDto,
   NodeInfoDto,
   NodeResponseDto,
 } from "../generated";
-import { TooltipState } from "../utils/tooltips";
+import { RootState } from "./store";
 
 export interface GlobalState {
-  tooltip?: TooltipState;
   isSocketConnected?: boolean;
   pubKey?: string;
   invoice?: LndInvoiceResponseDto;
@@ -22,28 +20,15 @@ const initialState: GlobalState = {
   invoicePaid: false,
 };
 
-const calculateTooltip = (state: GlobalState): TooltipState | undefined => {
-  if (state.invoicePaid) return TooltipState.RECOMMENDATION_LIST;
-  if (state.invoice) return TooltipState.QR_CODE;
-  if (state.isSocketConnected) return TooltipState.CONNECTED;
-};
-
 export const globalSlice = createSlice({
   name: "global",
   initialState,
   reducers: {
     socketChanged: (state, action: PayloadAction<boolean>) => {
       state.isSocketConnected = action.payload;
-
-      if (action.payload) {
-        state.tooltip = TooltipState.CONNECTED;
-      } else {
-        state.tooltip = TooltipState.CONNECTING;
-      }
     },
     invoiceFetched: (state, action: PayloadAction<LndInvoiceResponseDto>) => {
       state.invoice = action.payload;
-      state.tooltip = TooltipState.QR_CODE;
     },
     nodesFetched: (state, action: PayloadAction<NodeResponseDto[]>) => {
       state.nodes = action.payload;
@@ -51,24 +36,6 @@ export const globalSlice = createSlice({
     invoicePaid: (state) => {
       state.invoice = undefined;
       state.invoicePaid = true;
-      state.tooltip = TooltipState.RECOMMENDATION_LIST;
-    },
-    invalidPubkey: (state) => {
-      state.tooltip = TooltipState.NO_NODES_FOUND;
-    },
-    ninjaMouseEntered: (state) => {
-      state.tooltip = TooltipState.SHOW_MY_NODE;
-    },
-    resetTooltip: (state) => {
-      const tooltip = calculateTooltip(state);
-
-      state.tooltip = tooltip;
-    },
-    ninjaClicked: (state) => {
-      state.tooltip = TooltipState.MY_NODE_COPIED;
-    },
-    qrCodeClicked: (state) => {
-      state.tooltip = TooltipState.INVOICE_COPIED;
     },
     nodeInfoChanged: (state, action: PayloadAction<NodeInfoDto>) => {
       state.nodeInfo = action.payload;
@@ -86,13 +53,15 @@ export const {
   invoiceFetched,
   nodesFetched,
   invoicePaid,
-  invalidPubkey,
-  ninjaClicked,
-  ninjaMouseEntered,
   nodeInfoChanged,
-  qrCodeClicked,
-  resetTooltip,
   validPubKeyEntered,
 } = globalSlice.actions;
 
 export default globalSlice.reducer;
+
+export const selectIsSocketConnected = (state: RootState) =>
+  state.global.isSocketConnected;
+export const selectPubKey = (state: RootState) => state.global.pubKey;
+export const selectInvoice = (state: RootState) => state.global.invoice;
+export const selectInvoicePaid = (state: RootState) => state.global.invoicePaid;
+export const selectNodes = (state: RootState) => state.global.nodes;
