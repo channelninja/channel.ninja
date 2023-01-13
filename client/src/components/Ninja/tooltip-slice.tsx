@@ -28,6 +28,9 @@ export const tooltipSlice = createSlice({
     qrCodeClicked: (state) => {
       state.key = TooltipKey.QR_CODE_CLICKED;
     },
+    connectionsMouseEntered: (state) => {
+      state.key = TooltipKey.CONNECTIONS_HOVERED;
+    },
   },
 });
 
@@ -38,6 +41,7 @@ export const {
   qrCodeClicked,
   resetTooltip,
   invalidPubKey,
+  connectionsMouseEntered,
 } = tooltipSlice.actions;
 
 export default tooltipSlice.reducer;

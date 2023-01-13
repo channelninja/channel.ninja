@@ -1,7 +1,18 @@
 import { NodeResponseDto } from "../../generated";
+import { useAppDispatch } from "../../redux/hooks";
+import Info from "../Info/Info";
+import { connectionsMouseEntered, resetTooltip } from "../Ninja/tooltip-slice";
 import "./node.css";
 
 const Node = ({ node }: { node: NodeResponseDto }) => {
+  const dispatch = useAppDispatch();
+  const handleConnectionsMouseEnter = () => {
+    dispatch(connectionsMouseEntered());
+  };
+
+  const handleTooltipReset = () => {
+    dispatch(resetTooltip());
+  };
   return (
     <div id={node.id} className="node">
       <div className="node__headline-container">
@@ -41,7 +52,13 @@ const Node = ({ node }: { node: NodeResponseDto }) => {
         </div> */}
 
         <div className="node__meta">
-          <div className="node__meta-title">connections</div>
+          <div className="node__meta-title">
+            connections{" "}
+            <Info
+              onMouseEnter={handleConnectionsMouseEnter}
+              onMouseLeave={handleTooltipReset}
+            />
+          </div>
           <div className="node__meta-data">
             <span className="node__meta-data--bold">{node.connections}</span>
           </div>

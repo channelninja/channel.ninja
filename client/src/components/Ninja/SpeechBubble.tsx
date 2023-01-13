@@ -45,6 +45,13 @@ const SpeechBubble = () => {
         );
       case TooltipKey.QR_CODE_CLICKED:
         return <p>Invoice copied!</p>;
+      case TooltipKey.CONNECTIONS_HOVERED:
+        return (
+          <p>
+            Number of channels this node has to other suggested nodes in this
+            list.
+          </p>
+        );
       default:
         return undefined;
     }
