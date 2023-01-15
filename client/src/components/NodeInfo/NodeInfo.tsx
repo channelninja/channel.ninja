@@ -42,10 +42,10 @@ const NodeInfo = ({
           </div>
         )}
 
-        <div className="node-info__dl-wrap">
+        {/* <div className="node-info__dl-wrap">
           <dt className="node-info__definition-term">capacity</dt>
           <dd className="node-info__definition-data">{nodeInfo.capacity}</dd>
-        </div>
+        </div> */}
 
         <div className="node-info__dl-wrap">
           <dt className="node-info__definition-term">channels</dt>
