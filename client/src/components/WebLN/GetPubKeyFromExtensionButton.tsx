@@ -7,27 +7,29 @@ type GetPubKeyFromExtensionButtonProps = {
 }
 
 function GetPubKeyFromExtensionButton({setPubKey}: GetPubKeyFromExtensionButtonProps) {
-  const [webln, setWebln] = useState<WebLNProvider | undefined>();
-
-  useEffect(() => {
+  return <button className="webln__button" onClick={(e) => {
     (async () => {
+      let webln;
       try {
-        setWebln(await requestProvider());
+        webln = await requestProvider();
       }
       catch (error) {
         console.error("Failed to request webln", error);
+        alert((error as Error).message);
+      }
+      if (webln) {
+        try {
+          const info = await webln.getInfo();
+          setPubKey(info.node.pubkey);
+        }
+        catch(error) {
+          console.error("Failed to get node info", error);
+          alert("Failed to request node info");
+        }
       }
     })();
-  })
-
-
-  return webln ? <button className="webln__button" onClick={(e) => {
-    (async () => {
-      const info = await webln.getInfo();
-      setPubKey(info.node.pubkey);
-    })();
     e.preventDefault();
-  }}>Get from extension</button> : null;
+  }}>Get from extension</button>;
 }
 
 export default GetPubKeyFromExtensionButton;
