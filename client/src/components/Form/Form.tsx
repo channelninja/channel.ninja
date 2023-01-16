@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import GetPubKeyFromExtensionButton from "../WebLN";
 import "./form.css";
 
 const Form = ({
@@ -24,11 +25,13 @@ const Form = ({
         className="form__input"
         id="pubKey"
         placeholder="pubKey"
+        value={pubKey}
         onChange={(e) => {
           setPubKey(e.target.value);
         }}
         type="text"
       />
+      <GetPubKeyFromExtensionButton setPubKey={setPubKey}/>
     </form>
   );
 };

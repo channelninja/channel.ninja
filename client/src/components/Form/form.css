@@ -1,4 +1,5 @@
 .form {
+  display: flex;
 }
 
 .form__label {
