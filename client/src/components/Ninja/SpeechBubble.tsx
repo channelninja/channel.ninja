@@ -108,7 +108,16 @@ const SpeechBubble = () => {
     }
   }, [ninjaTextKey, nodeCount, invoice, handleQRCodeClick]);
 
-  return <div className="ninja__speech-bubble">{tooltip || ninjaText}</div>;
+  const maintenance =
+    process.env.REACT_APP_MAINTENANCE === "true" ? (
+      <p>I'm doing some maintenance. Try again later</p>
+    ) : undefined;
+
+  return (
+    <div className="ninja__speech-bubble">
+      {maintenance || tooltip || ninjaText}
+    </div>
+  );
 };
 
 export default SpeechBubble;

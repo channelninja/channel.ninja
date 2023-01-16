@@ -21,6 +21,7 @@ const Form = ({
       </label>
 
       <input
+        disabled={process.env.REACT_APP_MAINTENANCE === "true"}
         className="form__input"
         id="pubKey"
         placeholder="pubKey"
