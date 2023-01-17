@@ -15,13 +15,24 @@ const SpeechBubble = () => {
   const tooltipKey = useAppSelector((state) => state.tooltip.key);
 
   const handleQRCodeClick = useCallback(async () => {
-    await navigator.clipboard.writeText(invoice?.request || "");
-
-    dispatch(qrCodeClicked());
-    setTimeout(() => dispatch(resetTooltip()), 3000);
-
-    if (process.env.NODE_ENV !== "production") {
-      setTimeout(() => dispatch(invoicePaid()), 5000);
+    let usedWebln = false;
+    if (invoice?.request && window.webln) {
+      try {
+        await window.webln.enable();
+        await window.webln.sendPayment(invoice.request);
+        usedWebln = true;
+      }
+      catch(error) {
+        console.error("Failed to use webln to send payment", error);
+      }
+    }
+    if (!usedWebln) {
+      await navigator.clipboard.writeText(invoice?.request || "");
+      dispatch(qrCodeClicked());
+      setTimeout(() => dispatch(resetTooltip()), 3000);
+      if (process.env.NODE_ENV !== "production") {
+        setTimeout(() => dispatch(invoicePaid()), 5000);
+      }
     }
   }, [dispatch, invoice]);
 
@@ -75,6 +86,7 @@ const SpeechBubble = () => {
             <br />
             {invoice && (
               <QRCodeSVG
+                style={{cursor: "pointer"}}
                 onClick={handleQRCodeClick}
                 value={`lightning:${invoice.request}`}
                 size={260}
