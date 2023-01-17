@@ -9,6 +9,7 @@ import {
 } from "../../components/Ninja/tooltip-slice";
 import Node from "../../components/Node";
 import NodeInfo from "../../components/NodeInfo";
+import Social from "../../components/Social";
 import { useSockets } from "../../context/useSocket";
 import { LndService, SuggestionsService } from "../../generated";
 import {
@@ -164,19 +165,7 @@ const HomePage = () => {
         </div>
       </div>
 
-      <div className="home__github">
-        <a
-          href="https://github.com/channelninja/channel.ninja"
-          target="_blank"
-          rel="noreferrer"
-        >
-          <img
-            className="home__github-image"
-            src="/github-mark-white.svg"
-            alt="github logo"
-          />
-        </a>
-      </div>
+      <Social />
     </div>
   );
 };
