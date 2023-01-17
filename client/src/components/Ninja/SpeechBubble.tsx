@@ -1,5 +1,5 @@
 import { QRCodeSVG } from "qrcode.react";
-import { useCallback, useMemo } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { invoicePaid } from "../../redux/global-slice";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { NinjaText } from "./ninja-text.enum";
@@ -13,26 +13,32 @@ const SpeechBubble = () => {
   const invoice = useAppSelector((state) => state.global.invoice);
   const dispatch = useAppDispatch();
   const tooltipKey = useAppSelector((state) => state.tooltip.key);
+  const [useWebLN, setUseWebLN] = useState(true);
+
+  useEffect(() => {
+    (async () => {
+      if (window.webln) {
+        if (invoice?.request) {
+          try {
+            await window.webln.enable();
+            await window.webln.sendPayment(invoice.request);
+          } catch (error) {
+            console.error("Failed to use webln to send payment", error);
+            setUseWebLN(false);
+          }
+        }
+      } else {
+        setUseWebLN(false);
+      }
+    })();
+  }, [invoice?.request]);
 
   const handleQRCodeClick = useCallback(async () => {
-    let usedWebln = false;
-    if (invoice?.request && window.webln) {
-      try {
-        await window.webln.enable();
-        await window.webln.sendPayment(invoice.request);
-        usedWebln = true;
-      }
-      catch(error) {
-        console.error("Failed to use webln to send payment", error);
-      }
-    }
-    if (!usedWebln) {
-      await navigator.clipboard.writeText(invoice?.request || "");
-      dispatch(qrCodeClicked());
-      setTimeout(() => dispatch(resetTooltip()), 3000);
-      if (process.env.NODE_ENV !== "production") {
-        setTimeout(() => dispatch(invoicePaid()), 5000);
-      }
+    await navigator.clipboard.writeText(invoice?.request || "");
+    dispatch(qrCodeClicked());
+    setTimeout(() => dispatch(resetTooltip()), 3000);
+    if (process.env.NODE_ENV !== "production") {
+      setTimeout(() => dispatch(invoicePaid()), 5000);
     }
   }, [dispatch, invoice]);
 
@@ -84,14 +90,16 @@ const SpeechBubble = () => {
             Found {nodeCount} nodes. Pay the invoice (1000sats) to continue.
             <br />
             <br />
-            {invoice && (
-              <QRCodeSVG
-                style={{cursor: "pointer"}}
-                onClick={handleQRCodeClick}
-                value={`lightning:${invoice.request}`}
-                size={260}
-              />
-            )}
+            {invoice &&
+              (useWebLN ? (
+                <>Waiting for payment...</>
+              ) : (
+                <QRCodeSVG
+                  onClick={handleQRCodeClick}
+                  value={`lightning:${invoice.request}`}
+                  size={260}
+                />
+              ))}
           </p>
         );
       case NinjaText.RECOMMENDATION_LIST:
@@ -118,7 +126,7 @@ const SpeechBubble = () => {
           </p>
         );
     }
-  }, [ninjaTextKey, nodeCount, invoice, handleQRCodeClick]);
+  }, [ninjaTextKey, nodeCount, invoice, useWebLN, handleQRCodeClick]);
 
   return <div className="ninja__speech-bubble">{tooltip || ninjaText}</div>;
 };
