@@ -18,7 +18,7 @@ const SpeechBubble = () => {
   useEffect(() => {
     (async () => {
       if (window.webln) {
-        if (invoice?.request) {
+        if (invoice?.request && nodeCount > 0) {
           try {
             await window.webln.enable();
             await window.webln.sendPayment(invoice.request);
@@ -31,7 +31,7 @@ const SpeechBubble = () => {
         setUseWebLN(false);
       }
     })();
-  }, [invoice?.request]);
+  }, [invoice?.request, nodeCount]);
 
   const handleQRCodeClick = useCallback(async () => {
     await navigator.clipboard.writeText(invoice?.request || "");
