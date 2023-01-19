@@ -35,8 +35,11 @@ const SpeechBubble = () => {
 
   const handleQRCodeClick = useCallback(async () => {
     await navigator.clipboard.writeText(invoice?.request || "");
+
     dispatch(qrCodeClicked());
+
     setTimeout(() => dispatch(resetTooltip()), 3000);
+
     if (process.env.NODE_ENV !== "production") {
       setTimeout(() => dispatch(invoicePaid()), 5000);
     }

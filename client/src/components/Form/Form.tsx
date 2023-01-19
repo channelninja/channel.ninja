@@ -16,24 +16,29 @@ const Form = ({
   }, [pubKey, onSubmit]);
 
   return (
-    <form className="form">
-      <label htmlFor="pubKey" className="form__label">
-        pubkey
-      </label>
+    <div className="form">
+      <form className="form__form">
+        <label htmlFor="pubKey" className="form__label">
+          pubkey
+        </label>
 
-      <input
-        disabled={process.env.REACT_APP_MAINTENANCE === "true"}
-        className="form__input"
-        id="pubKey"
-        placeholder="pubKey"
-        value={pubKey}
-        onChange={(e) => {
-          setPubKey(e.target.value);
-        }}
-        type="text"
-      />
-      <GetPubKeyFromExtensionButton setPubKey={setPubKey}/>
-    </form>
+        <input
+          disabled={process.env.REACT_APP_MAINTENANCE === "true"}
+          className="form__input"
+          id="pubKey"
+          placeholder="pubKey"
+          value={pubKey}
+          onChange={(e) => {
+            setPubKey(e.target.value);
+          }}
+          type="text"
+        />
+      </form>
+
+      <div className="form__webln-button-wrap">
+        <GetPubKeyFromExtensionButton setPubKey={setPubKey} />
+      </div>
+    </div>
   );
 };
 

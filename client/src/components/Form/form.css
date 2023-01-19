@@ -1,5 +1,11 @@
-.form {
+.form__webln-button-wrap {
+  width: 100%;
+  text-align: right;
+}
+
+.form__form {
   display: flex;
+  border: 2px dashed #000;
 }
 
 .form__label {
