@@ -35,9 +35,11 @@ const Form = ({
         />
       </form>
 
-      <div className="form__webln-button-wrap">
-        <GetPubKeyFromExtensionButton setPubKey={setPubKey} />
-      </div>
+      {window.webln ? (
+        <div className="form__webln-button-wrap">
+          <GetPubKeyFromExtensionButton setPubKey={setPubKey} />
+        </div>
+      ) : null}
     </div>
   );
 };
