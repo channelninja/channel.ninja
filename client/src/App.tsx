@@ -1,9 +1,9 @@
 import { useEffect } from "react";
+import { throttle } from "throttle-debounce";
 import { useSockets } from "./context/useSocket";
 import HomePage from "./pages/HomePage/HomePage";
 import { socketChanged } from "./redux/global-slice";
 import { useAppDispatch } from "./redux/hooks";
-import { throttle } from "throttle-debounce";
 
 function App() {
   const socket = useSockets();
