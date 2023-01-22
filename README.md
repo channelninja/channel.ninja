@@ -4,7 +4,7 @@
 
 # channel.ninja
 
-channel.ninja is a tool to recommend channel partners for your lightning node.
+<a href='https://channel.ninja'>channel.ninja</a> is a tool to recommend channel partners for your lightning node.
 
 ## Installation
 
