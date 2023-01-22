@@ -1,4 +1,3 @@
-/// <reference types="@webbtc/webln-types" />
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { Provider } from "react-redux";
