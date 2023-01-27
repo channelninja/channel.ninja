@@ -7,6 +7,7 @@ import { FeesModule } from './fees/fees.module';
 import { GraphModule } from './graph/graph.module';
 import { InitModule } from './init/init.module';
 import { LndModule } from './lnd/lnd.module';
+import { migrations } from './migrations';
 import { SettingsModule } from './settings/settings.module';
 import { StaticModule } from './static/static.module';
 import { SuggestionsModule } from './suggestions/suggestions.module';
@@ -18,13 +19,14 @@ import { SuggestionsModule } from './suggestions/suggestions.module';
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => {
         const database = configService.get('DB_PATH');
-        console.log({ database });
 
         return {
           type: 'better-sqlite3',
           autoLoadEntities: true,
-          database: configService.get('DB_PATH'),
-          synchronize: true,
+          database,
+          synchronize: false,
+          migrationsRun: true,
+          migrations,
         };
       },
       inject: [ConfigService],
