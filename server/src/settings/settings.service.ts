@@ -10,10 +10,7 @@ import { SettingsKey } from './settings-key.enum';
 
 @Injectable()
 export class SettingsService {
-  constructor(
-    @InjectRepository(Setting)
-    private settingsRepository: Repository<Setting>,
-  ) {}
+  constructor(@InjectRepository(Setting) private settingsRepository: Repository<Setting>) {}
 
   public async set({ key, value }: { key: SettingsKey; value: string }): Promise<void> {
     await this.settingsRepository.save({ key, value });
@@ -21,6 +18,10 @@ export class SettingsService {
 
   public async isMaintenanceMode(): Promise<boolean> {
     const maintenanceSetting = await this.settingsRepository.findOne({ where: { key: SettingsKey.maintenance } });
+
+    if (!maintenanceSetting) {
+      return false;
+    }
 
     return maintenanceSetting.value === MaintenanceValue.true;
   }
