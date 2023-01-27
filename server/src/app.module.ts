@@ -8,6 +8,8 @@ import { StaticModule } from './static/static.module';
 import { SuggestionsModule } from './suggestions/suggestions.module';
 import { AuthModule } from './auth/auth.module';
 import { SettingsModule } from './settings/settings.module';
+import { FeesModule } from './fees/fees.module';
+import { InitModule } from './init/init.module';
 
 @Module({
   imports: [
@@ -25,6 +27,8 @@ import { SettingsModule } from './settings/settings.module';
     SuggestionsModule,
     AuthModule,
     SettingsModule,
+    FeesModule,
+    InitModule,
   ],
 })
 export class AppModule {}

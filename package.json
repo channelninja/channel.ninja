@@ -1,7 +1,10 @@
 {
   "name": "channel.ninja",
   "private": true,
-  "workspaces": ["server", "client"],
+  "workspaces": [
+    "server",
+    "client"
+  ],
   "version": "0.1.0",
   "description": "",
   "main": "server/dist/main.js",
@@ -17,5 +20,8 @@
   "types": "./server/dist/main.d.ts",
   "devDependencies": {
     "concurrently": "^7.6.0"
+  },
+  "resolutions": {
+    "**/@nestjs/axios/axios": "1.2.4"
   }
 }

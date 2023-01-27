@@ -8,9 +8,9 @@ import { SettingsKey } from './settings-key.enum';
 import { SettingsService } from './settings.service';
 
 @ApiTags('settings')
-@Controller('settings')
 @UseGuards(BasicGuard)
 @ApiBasicAuth()
+@Controller('settings')
 export class SettingsController {
   constructor(private settingsService: SettingsService) {}
 

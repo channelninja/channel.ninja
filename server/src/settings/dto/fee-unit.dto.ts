@@ -1,11 +1,11 @@
 import { IsEnum } from 'class-validator';
 
-export enum FeeUnitValue {
+export enum FeeUnit {
   sats = 'sats',
   cents = 'cents',
 }
 
 export class FeeUnitDto {
-  @IsEnum(FeeUnitValue)
-  public value: FeeUnitValue;
+  @IsEnum(FeeUnit)
+  public value: FeeUnit;
 }

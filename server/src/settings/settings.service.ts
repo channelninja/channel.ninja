@@ -1,8 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { DEFAULT_FEE } from 'src/fees/default-fee.constant';
 import { In, Repository } from 'typeorm';
 import { FeeSettingsDto } from './dto/fee-settings.dto';
-import { FeeUnitValue } from './dto/fee-unit.dto';
+import { FeeUnit } from './dto/fee-unit.dto';
 import { MaintenanceValue } from './dto/maintenance.dto';
 import { Setting } from './setting.entity';
 import { SettingsKey } from './settings-key.enum';
@@ -26,8 +27,8 @@ export class SettingsService {
 
   public async getFeeSettings(): Promise<FeeSettingsDto> {
     const defaultSettings: FeeSettingsDto = {
-      [SettingsKey.fee_amount]: 1000,
-      [SettingsKey.fee_unit]: FeeUnitValue.sats,
+      [SettingsKey.fee_amount]: DEFAULT_FEE,
+      [SettingsKey.fee_unit]: FeeUnit.sats,
     };
 
     const settings = await this.settingsRepository.find({
@@ -40,7 +41,7 @@ export class SettingsService {
       }
 
       if (key === SettingsKey.fee_unit) {
-        defaultSettings[SettingsKey.fee_unit] = FeeUnitValue[value];
+        defaultSettings[SettingsKey.fee_unit] = FeeUnit[value];
       }
     });
 
