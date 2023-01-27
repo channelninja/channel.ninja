@@ -1,6 +1,10 @@
 import { QRCodeSVG } from "qrcode.react";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { invoicePaid } from "../../redux/global-slice";
+import {
+  invoicePaid,
+  selectFee,
+  selectIsMaintenanceMode,
+} from "../../redux/global-slice";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { NinjaText } from "./ninja-text.enum";
 import { selectNinjaText } from "./ninja-text.selector";
@@ -14,6 +18,8 @@ const SpeechBubble = () => {
   const dispatch = useAppDispatch();
   const tooltipKey = useAppSelector((state) => state.tooltip.key);
   const [useWebLN, setUseWebLN] = useState(true);
+  const isMaintenanceMode = useAppSelector(selectIsMaintenanceMode);
+  const fee = useAppSelector(selectFee);
 
   useEffect(() => {
     (async () => {
@@ -90,7 +96,7 @@ const SpeechBubble = () => {
       case NinjaText.QR_CODE:
         return (
           <p>
-            Found {nodeCount} nodes. Pay the invoice (1000sats) to continue.
+            Found {nodeCount} nodes. Pay the invoice ({fee}sats) to continue.
             <br />
             <br />
             {invoice &&
@@ -131,10 +137,9 @@ const SpeechBubble = () => {
     }
   }, [ninjaTextKey, nodeCount, invoice, useWebLN, handleQRCodeClick]);
 
-  const maintenance =
-    process.env.REACT_APP_MAINTENANCE === "true" ? (
-      <p>I'm doing some maintenance. Try again later</p>
-    ) : undefined;
+  const maintenance = isMaintenanceMode ? (
+    <p>I'm doing some maintenance. Try again later</p>
+  ) : undefined;
 
   return (
     <div className="ninja__speech-bubble">

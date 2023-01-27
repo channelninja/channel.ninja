@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import {
+  InitResponseDto,
   LndInvoiceResponseDto,
   NodeInfoDto,
   NodeResponseDto,
@@ -13,17 +14,24 @@ export interface GlobalState {
   invoicePaid: boolean;
   nodes?: NodeResponseDto[];
   nodeInfo?: NodeInfoDto;
+  fee?: number;
+  isMaintenanceMode: boolean;
 }
 
 const initialState: GlobalState = {
   isSocketConnected: false,
   invoicePaid: false,
+  isMaintenanceMode: false,
 };
 
 export const globalSlice = createSlice({
   name: "global",
   initialState,
   reducers: {
+    initApp: (state, action: PayloadAction<InitResponseDto>) => {
+      state.isMaintenanceMode = action.payload.maintenance;
+      state.fee = action.payload.fee;
+    },
     socketChanged: (state, action: PayloadAction<boolean>) => {
       state.isSocketConnected = action.payload;
     },
@@ -49,6 +57,7 @@ export const globalSlice = createSlice({
 
 // Action creators are generated for each case reducer function
 export const {
+  initApp,
   socketChanged,
   invoiceFetched,
   nodesFetched,
@@ -65,3 +74,6 @@ export const selectPubKey = (state: RootState) => state.global.pubKey;
 export const selectInvoice = (state: RootState) => state.global.invoice;
 export const selectInvoicePaid = (state: RootState) => state.global.invoicePaid;
 export const selectNodes = (state: RootState) => state.global.nodes;
+export const selectFee = (state: RootState) => state.global.fee;
+export const selectIsMaintenanceMode = (state: RootState) =>
+  state.global.isMaintenanceMode;

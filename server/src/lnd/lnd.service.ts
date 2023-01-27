@@ -12,6 +12,7 @@ import {
   subscribeToInvoice,
   SubscribeToInvoiceInvoiceUpdatedEvent,
 } from 'lightning';
+import { FeesService } from 'src/fees/fees.service';
 import { LndInvoiceResponseDto } from './dto/lnd-invoice-response.dto';
 import { LndGateway } from './lnd.gateway';
 
@@ -20,9 +21,7 @@ export class LndService {
   private lnd: AuthenticatedLnd;
   private graph: GetNetworkGraphResult;
 
-  constructor(
-    @Inject(forwardRef(() => LndGateway)) private lndGateWay: LndGateway,
-  ) {
+  constructor(@Inject(forwardRef(() => LndGateway)) private lndGateWay: LndGateway, private feesService: FeesService) {
     const { lnd } = authenticatedLndGrpc({
       cert: '',
       macaroon: process.env.MACAROON,
@@ -57,15 +56,10 @@ export class LndService {
   private async fetchNetworkGraph(): Promise<GetNetworkGraphResult> {
     console.log('fetchNetworkGraph');
 
-    if (
-      process.env.NODE_ENV === 'production' ||
-      process.env.FORCE_FETCH_GRAPH === 'true'
-    ) {
+    if (process.env.NODE_ENV === 'production' || process.env.FORCE_FETCH_GRAPH === 'true') {
       this.graph = await getNetworkGraph({ lnd: this.lnd });
     } else {
-      this.graph = (await import(
-        './data/graph.json'
-      )) as unknown as GetNetworkGraphResult;
+      this.graph = (await import('./data/graph.json')) as unknown as GetNetworkGraphResult;
     }
 
     console.log('Graph fetched!');
@@ -73,9 +67,7 @@ export class LndService {
     return this.graph;
   }
 
-  public async getOrCreateInvoice(
-    invoiceId?: string,
-  ): Promise<LndInvoiceResponseDto> {
+  public async getOrCreateInvoice(invoiceId?: string): Promise<LndInvoiceResponseDto> {
     if (invoiceId) {
       const invoice = await getInvoice({ lnd: this.lnd, id: invoiceId });
 
@@ -96,8 +88,9 @@ export class LndService {
   }
 
   public async createInvoice(): Promise<LndInvoiceResponseDto> {
+    const fees = await this.feesService.getFee();
     const expires_at = new Date(Date.now() + 1000 * 60 * 60 * 1).toISOString();
-    const tokens = process.env.NODE_ENV === 'production' ? 1000 : 1;
+    const tokens = process.env.NODE_ENV === 'production' ? fees : 1;
 
     const createdInvoice = await createInvoice({
       lnd: this.lnd,
@@ -107,18 +100,15 @@ export class LndService {
 
     const sub = subscribeToInvoice({ id: createdInvoice.id, lnd: this.lnd });
 
-    sub.addListener(
-      'invoice_updated',
-      async (invoice: SubscribeToInvoiceInvoiceUpdatedEvent) => {
-        if (process.env.NODE_ENV !== 'production') {
-          console.log('invoice_updated', invoice);
-        }
+    sub.addListener('invoice_updated', async (invoice: SubscribeToInvoiceInvoiceUpdatedEvent) => {
+      if (process.env.NODE_ENV !== 'production') {
+        console.log('invoice_updated', invoice);
+      }
 
-        if (invoice.is_confirmed) {
-          this.lndGateWay.invoiceConfirmed(invoice.id);
-        }
-      },
-    );
+      if (invoice.is_confirmed) {
+        this.lndGateWay.invoiceConfirmed(invoice.id);
+      }
+    });
 
     return {
       request: createdInvoice.request,

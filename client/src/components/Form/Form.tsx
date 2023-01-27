@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import { selectIsMaintenanceMode } from "../../redux/global-slice";
+import { useAppSelector } from "../../redux/hooks";
 import GetPubKeyFromExtensionButton from "../WebLN";
 import "./form.css";
 
@@ -8,6 +10,7 @@ const Form = ({
   onSubmit: ({ pubKey }: { pubKey: string }) => void;
 }) => {
   const [pubKey, setPubKey] = useState("");
+  const isMaintenanceMode = useAppSelector(selectIsMaintenanceMode);
 
   useEffect(() => {
     if (pubKey) {
@@ -23,7 +26,7 @@ const Form = ({
         </label>
 
         <input
-          disabled={process.env.REACT_APP_MAINTENANCE === "true"}
+          disabled={isMaintenanceMode}
           className="form__input"
           id="pubKey"
           placeholder="pubKey"

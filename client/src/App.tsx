@@ -1,13 +1,24 @@
 import { useEffect } from "react";
 import { throttle } from "throttle-debounce";
 import { useSockets } from "./context/useSocket";
+import { InitService } from "./generated";
 import HomePage from "./pages/HomePage/HomePage";
-import { socketChanged } from "./redux/global-slice";
+import { initApp, socketChanged } from "./redux/global-slice";
 import { useAppDispatch } from "./redux/hooks";
 
 function App() {
   const socket = useSockets();
   const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    const init = async () => {
+      const initialSettings = await InitService.init();
+
+      dispatch(initApp(initialSettings));
+    };
+
+    init();
+  });
 
   useEffect(() => {
     socket?.on("connect", () => {
