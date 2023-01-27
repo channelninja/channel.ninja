@@ -18,7 +18,7 @@ function App() {
     };
 
     init();
-  });
+  }, [dispatch]);
 
   useEffect(() => {
     socket?.on("connect", () => {
