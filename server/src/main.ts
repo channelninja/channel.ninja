@@ -50,6 +50,7 @@ async function bootstrap() {
     .setTitle('channel.ninja')
     .setDescription('channel.ninja API description')
     .setVersion('1.0.0')
+    .addBasicAuth()
     .build();
 
   const options = {

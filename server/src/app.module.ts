@@ -6,6 +6,8 @@ import { GraphModule } from './graph/graph.module';
 import { LndModule } from './lnd/lnd.module';
 import { StaticModule } from './static/static.module';
 import { SuggestionsModule } from './suggestions/suggestions.module';
+import { AuthModule } from './auth/auth.module';
+import { SettingsModule } from './settings/settings.module';
 
 @Module({
   imports: [
@@ -21,6 +23,8 @@ import { SuggestionsModule } from './suggestions/suggestions.module';
     GraphModule,
     LndModule,
     SuggestionsModule,
+    AuthModule,
+    SettingsModule,
   ],
 })
 export class AppModule {}
