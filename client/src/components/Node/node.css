@@ -11,6 +11,10 @@
   justify-content: space-between;
 }
 
+.node__meta-container + .node__meta-container {
+  margin-top: 2rem;
+}
+
 .node__meta + .node__meta {
   margin-left: 2rem;
 }
@@ -27,7 +31,7 @@
 .node__headline {
   font-size: 2.6rem;
   text-overflow: ellipsis;
-  white-space:nowrap;
+  white-space: nowrap;
   overflow: hidden;
   margin-bottom: 1rem;
 }

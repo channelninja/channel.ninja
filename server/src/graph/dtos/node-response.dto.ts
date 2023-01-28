@@ -29,4 +29,20 @@ export class NodeResponseDto {
   @Expose()
   @IsNumber()
   public connections: number;
+
+  @Expose()
+  @IsNumber()
+  public capacity: number;
+
+  @Expose()
+  @IsNumber()
+  public maxChannelSize: number;
+
+  @Expose()
+  @IsNumber()
+  public minChannelSize: number;
+
+  @Expose()
+  @IsNumber()
+  public avgChannelSize: number;
 }

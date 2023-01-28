@@ -6,6 +6,7 @@ import {
   selectIsMaintenanceMode,
 } from "../../redux/global-slice";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
+import { CHANNEL_NINJA_PUB_KEY } from "../../utils/global-constants";
 import { NinjaText } from "./ninja-text.enum";
 import { selectNinjaText } from "./ninja-text.selector";
 import { qrCodeClicked, resetTooltip } from "./tooltip-slice";
@@ -63,7 +64,7 @@ const SpeechBubble = () => {
             Connect to my node!
             <br />
             <br />
-            03a5f0c532cd4cc7a4d91956e6f66e1e80daee114e0be9244055168b005726d80c
+            {CHANNEL_NINJA_PUB_KEY}
             <br />
             <br />
             Click to copy pubkey.

@@ -4,18 +4,16 @@ import { LndService } from 'src/lnd/lnd.service';
 import { EdgeResponseDto } from './dtos/edge-response.dto';
 import { GraphResponseDto } from './dtos/graph-response.dto';
 import { NodeResponseDto } from './dtos/node-response.dto';
-import {
-  MAX_CHANNELS,
-  MIN_CHANNELS,
-  MIN_DISTANCE,
-  TWO_WEEKS,
-} from './graph.constants';
+import { MAX_CHANNELS, MIN_CHANNELS, MIN_DISTANCE, TWO_WEEKS } from './graph.constants';
 
 type Node = {
   pubKey: string;
   alias: string;
   color: string;
   lastUpdate: number;
+  capacity: number;
+  minChannelSize: number;
+  maxChannelSize: number;
   partners: Set<Node>;
 };
 
@@ -31,25 +29,32 @@ export class GraphService {
       this.nodesMap = new Map();
       this.graphData = graphData;
 
-      this.graphData.nodes.forEach(
-        ({ public_key, alias, color, updated_at }) => {
-          this.nodesMap.set(public_key, {
-            alias,
-            pubKey: public_key,
-            color,
-            lastUpdate: new Date(updated_at).valueOf(),
-            partners: new Set<Node>(),
-          });
-        },
-      );
+      this.graphData.nodes.forEach(({ public_key, alias, color, updated_at }) => {
+        this.nodesMap.set(public_key, {
+          alias,
+          pubKey: public_key,
+          color,
+          lastUpdate: new Date(updated_at).valueOf(),
+          capacity: 0,
+          minChannelSize: Infinity,
+          maxChannelSize: 0,
+          partners: new Set<Node>(),
+        });
+      });
 
-      this.graphData.channels.forEach(({ policies }) => {
+      this.graphData.channels.forEach(({ policies, capacity }) => {
         const node1 = this.nodesMap.get(policies[0].public_key);
         const node2 = this.nodesMap.get(policies[1].public_key);
 
         if (!node1 || !node2) {
           return;
         }
+
+        node1.minChannelSize = capacity < node1.minChannelSize ? capacity : node1.minChannelSize;
+        node1.maxChannelSize = capacity > node1.maxChannelSize ? capacity : node1.maxChannelSize;
+
+        node1.capacity = node1.capacity + capacity;
+        node2.capacity = node2.capacity + capacity;
 
         node1.partners.add(node2);
         node2.partners.add(node1);
@@ -72,14 +77,8 @@ export class GraphService {
     const interConnectedNodes = new Map<string, number>();
 
     for (const edge of edges) {
-      interConnectedNodes.set(
-        edge.source,
-        (interConnectedNodes.get(edge.source) || 0) + 1,
-      );
-      interConnectedNodes.set(
-        edge.target,
-        (interConnectedNodes.get(edge.target) || 0) + 1,
-      );
+      interConnectedNodes.set(edge.source, (interConnectedNodes.get(edge.source) || 0) + 1);
+      interConnectedNodes.set(edge.target, (interConnectedNodes.get(edge.target) || 0) + 1);
     }
 
     return {
@@ -99,10 +98,7 @@ export class GraphService {
     const edgeSet = new Set<string>();
 
     this.graphData.channels.forEach(({ policies }) => {
-      if (
-        rawNodes.includes(policies[0].public_key) &&
-        rawNodes.includes(policies[1].public_key)
-      ) {
+      if (rawNodes.includes(policies[0].public_key) && rawNodes.includes(policies[1].public_key)) {
         edgeSet.add(`${policies[0].public_key}_${policies[1].public_key}`);
       }
     });
@@ -115,13 +111,7 @@ export class GraphService {
     return edgeResponseDto;
   }
 
-  private traverseNodes({
-    start,
-    maxPartners,
-  }: {
-    start: string;
-    maxPartners?: number;
-  }): NodeResponseDto[] {
+  private traverseNodes({ start }: { start: string }): NodeResponseDto[] {
     const startNode = this.nodesMap.get(start);
 
     const queue: Node[] = [];
@@ -140,7 +130,7 @@ export class GraphService {
 
       const partners = Array.from(node.partners);
 
-      partners.slice(0, maxPartners).forEach((partner) => {
+      partners.forEach((partner) => {
         if (!visited.has(partner.pubKey)) {
           visited.add(partner.pubKey);
           const distance = distances.get(node.pubKey) + 1;
@@ -150,9 +140,7 @@ export class GraphService {
 
           const channelCount = partner.partners.size;
           const lastUpdateInLessThatTwoWeeks =
-            process.env.NODE_ENV !== 'production'
-              ? true
-              : Date.now() - partner.lastUpdate <= TWO_WEEKS;
+            process.env.NODE_ENV !== 'production' ? true : Date.now() - partner.lastUpdate <= TWO_WEEKS;
 
           if (
             distance >= MIN_DISTANCE &&
@@ -168,6 +156,10 @@ export class GraphService {
               color: partner.color,
               lastUpdate: partner.lastUpdate,
               connections: 0,
+              capacity: partner.capacity,
+              minChannelSize: partner.minChannelSize,
+              maxChannelSize: partner.maxChannelSize,
+              avgChannelSize: Math.floor(partner.capacity / channelCount),
             });
           }
         }

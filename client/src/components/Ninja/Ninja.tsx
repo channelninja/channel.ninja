@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useAppDispatch } from "../../redux/hooks";
+import { CHANNEL_NINJA_PUB_KEY } from "../../utils/global-constants";
 import "./ninja.css";
 import SpeechBubble from "./SpeechBubble";
 import { ninjaClicked, ninjaMouseEntered, resetTooltip } from "./tooltip-slice";
@@ -24,9 +25,7 @@ const Ninja = () => {
     if (window.innerWidth <= 768) {
       setIsHidden((prev) => !prev);
     } else {
-      await navigator.clipboard.writeText(
-        "03a5f0c532cd4cc7a4d91956e6f66e1e80daee114e0be9244055168b005726d80c"
-      );
+      await navigator.clipboard.writeText(CHANNEL_NINJA_PUB_KEY);
 
       dispatch(ninjaClicked());
       setTimeout(() => dispatch(resetTooltip()), 3000);

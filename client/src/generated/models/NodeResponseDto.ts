@@ -10,5 +10,9 @@ export type NodeResponseDto = {
     color: string;
     lastUpdate: number;
     connections: number;
+    capacity: number;
+    maxChannelSize: number;
+    minChannelSize: number;
+    avgChannelSize: number;
 };
 
