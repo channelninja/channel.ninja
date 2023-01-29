@@ -79,6 +79,8 @@ const SpeechBubble = () => {
             list.
           </p>
         );
+      case TooltipKey.ADDRESS_CLICKED:
+        return <p>Address copied to clipboard.</p>;
       default:
         return undefined;
     }
@@ -136,7 +138,7 @@ const SpeechBubble = () => {
           </p>
         );
     }
-  }, [ninjaTextKey, nodeCount, invoice, useWebLN, handleQRCodeClick]);
+  }, [ninjaTextKey, nodeCount, invoice, useWebLN, handleQRCodeClick, fee]);
 
   const maintenance = isMaintenanceMode ? (
     <p>I'm doing some maintenance. Try again later</p>

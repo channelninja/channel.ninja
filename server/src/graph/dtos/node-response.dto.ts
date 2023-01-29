@@ -45,4 +45,8 @@ export class NodeResponseDto {
   @Expose()
   @IsNumber()
   public avgChannelSize: number;
+
+  @Expose()
+  @IsString({ each: true })
+  public sockets: string[];
 }

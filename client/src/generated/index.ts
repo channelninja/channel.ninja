@@ -8,6 +8,7 @@ export type { OpenAPIConfig } from './core/OpenAPI';
 
 export type { FeeAmountDto } from './models/FeeAmountDto';
 export { FeeUnitDto } from './models/FeeUnitDto';
+export type { GetSettingsResponseDto } from './models/GetSettingsResponseDto';
 export type { InitResponseDto } from './models/InitResponseDto';
 export type { LndInvoiceResponseDto } from './models/LndInvoiceResponseDto';
 export { MaintenanceDto } from './models/MaintenanceDto';

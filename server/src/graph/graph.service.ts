@@ -12,6 +12,7 @@ type Node = {
   capacity: number;
   minChannelSize: number;
   maxChannelSize: number;
+  sockets: string[];
   peers: Set<Node>;
 };
 
@@ -27,7 +28,7 @@ export class GraphService {
       this.nodesMap = new Map();
       this.graphData = graphData;
 
-      this.graphData.nodes.forEach(({ public_key, alias, color, updated_at }) => {
+      this.graphData.nodes.forEach(({ public_key, alias, color, updated_at, sockets }) => {
         this.nodesMap.set(public_key, {
           alias,
           pubKey: public_key,
@@ -37,6 +38,7 @@ export class GraphService {
           minChannelSize: Infinity,
           maxChannelSize: 0,
           peers: new Set<Node>(),
+          sockets,
         });
       });
 
@@ -133,6 +135,7 @@ export class GraphService {
             minChannelSize: peer.minChannelSize,
             maxChannelSize: peer.maxChannelSize,
             avgChannelSize: Math.floor(peer.capacity / channelCount),
+            sockets: peer.sockets,
           });
         }
       });

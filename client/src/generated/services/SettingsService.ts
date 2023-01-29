@@ -3,6 +3,7 @@
 /* eslint-disable */
 import type { FeeAmountDto } from '../models/FeeAmountDto';
 import type { FeeUnitDto } from '../models/FeeUnitDto';
+import type { GetSettingsResponseDto } from '../models/GetSettingsResponseDto';
 import type { MaintenanceDto } from '../models/MaintenanceDto';
 
 import type { CancelablePromise } from '../core/CancelablePromise';
@@ -10,6 +11,17 @@ import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
 
 export class SettingsService {
+
+    /**
+     * @returns GetSettingsResponseDto
+     * @throws ApiError
+     */
+    public static getSettings(): CancelablePromise<Array<GetSettingsResponseDto>> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/settings',
+        });
+    }
 
     /**
      * @param requestBody

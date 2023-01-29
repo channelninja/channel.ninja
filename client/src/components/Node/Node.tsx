@@ -3,6 +3,7 @@ import { useAppDispatch } from "../../redux/hooks";
 import Info from "../Info/Info";
 import { connectionsMouseEntered, resetTooltip } from "../Ninja/tooltip-slice";
 import "./node.css";
+import Socket from "./Socket";
 
 const Node = ({ node }: { node: NodeResponseDto }) => {
   const dispatch = useAppDispatch();
@@ -65,9 +66,7 @@ const Node = ({ node }: { node: NodeResponseDto }) => {
             </span>
           </div>
         </div>
-      </div>
 
-      <div className="node__meta-container">
         <div className="node__meta">
           <div className="node__meta-title">capacity</div>
           <div className="node__meta-data">
@@ -107,6 +106,16 @@ const Node = ({ node }: { node: NodeResponseDto }) => {
             sats
           </div>
         </div>
+      </div>
+
+      <div className="node__sockets-container">
+        <ul className="node__sockets-list">
+          {node.sockets.map((socket, i) => (
+            <li key={i} className="node__sockets-list-item">
+              <Socket socket={socket} pubkey={node.id} />
+            </li>
+          ))}
+        </ul>
       </div>
     </div>
   );

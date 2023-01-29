@@ -14,5 +14,6 @@ export type NodeResponseDto = {
     maxChannelSize: number;
     minChannelSize: number;
     avgChannelSize: number;
+    sockets: Array<string>;
 };
 

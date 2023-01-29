@@ -31,6 +31,9 @@ export const tooltipSlice = createSlice({
     connectionsMouseEntered: (state) => {
       state.key = TooltipKey.CONNECTIONS_HOVERED;
     },
+    addressClicked: (state) => {
+      state.key = TooltipKey.ADDRESS_CLICKED;
+    },
   },
 });
 
@@ -42,6 +45,7 @@ export const {
   resetTooltip,
   invalidPubKey,
   connectionsMouseEntered,
+  addressClicked,
 } = tooltipSlice.actions;
 
 export default tooltipSlice.reducer;
