@@ -1,8 +1,9 @@
-import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
 import { ApiBasicAuth, ApiTags } from '@nestjs/swagger';
 import { BasicGuard } from 'src/auth/basic.guard';
 import { FeeAmountDto } from './dto/fee-amount.dto';
 import { FeeUnitDto } from './dto/fee-unit.dto';
+import { GetSettingsResponseDto } from './dto/get-settings-response.dto';
 import { MaintenanceDto } from './dto/maintenance.dto';
 import { SettingsKey } from './settings-key.enum';
 import { SettingsService } from './settings.service';
@@ -13,6 +14,11 @@ import { SettingsService } from './settings.service';
 @Controller('settings')
 export class SettingsController {
   constructor(private settingsService: SettingsService) {}
+
+  @Get()
+  public async getSettings(): Promise<GetSettingsResponseDto[]> {
+    return await this.settingsService.getSettings();
+  }
 
   @Post(SettingsKey.maintenance)
   public async setMaintenance(@Body() { value }: MaintenanceDto): Promise<void> {

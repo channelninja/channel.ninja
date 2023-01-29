@@ -4,6 +4,7 @@ import { DEFAULT_FEE } from 'src/fees/default-fee.constant';
 import { In, Repository } from 'typeorm';
 import { FeeSettingsDto } from './dto/fee-settings.dto';
 import { FeeUnit } from './dto/fee-unit.dto';
+import { GetSettingsResponseDto } from './dto/get-settings-response.dto';
 import { MaintenanceValue } from './dto/maintenance.dto';
 import { Setting } from './setting.entity';
 import { SettingsKey } from './settings-key.enum';
@@ -11,6 +12,12 @@ import { SettingsKey } from './settings-key.enum';
 @Injectable()
 export class SettingsService {
   constructor(@InjectRepository(Setting) private settingsRepository: Repository<Setting>) {}
+
+  public async getSettings(): Promise<GetSettingsResponseDto[]> {
+    const settings = await this.settingsRepository.find();
+
+    return settings;
+  }
 
   public async set({ key, value }: { key: SettingsKey; value: string }): Promise<void> {
     await this.settingsRepository.save({ key, value });
