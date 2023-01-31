@@ -4,6 +4,7 @@ import session from 'express-session';
 import { AppModule } from './app.module';
 
 import { ValidationPipe } from '@nestjs/common';
+import { NestExpressApplication } from '@nestjs/platform-express';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { RedocModule, RedocOptions } from '@nicholas.braun/nestjs-redoc';
 import betterSqlite3SessionStore from 'better-sqlite3-session-store';
@@ -12,7 +13,7 @@ const SqliteStore = betterSqlite3SessionStore(session);
 const db = new sqlite(process.env.DB_PATH);
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
   app.enableCors();
   app.setGlobalPrefix('api');
@@ -28,6 +29,8 @@ async function bootstrap() {
     }),
   );
 
+  app.set('trust proxy', 1); // trust first proxy
+
   app.use(
     session({
       store: new SqliteStore({
@@ -39,9 +42,10 @@ async function bootstrap() {
       }),
       cookie: {
         maxAge: 1 * 60 * 60 * 1000, // 1 hour
-        secure: process.env.NODE_ENV === 'production',
+        secure: 'auto',
         httpOnly: true,
       },
+      name: 'sessionId',
       secret: process.env.SESSION_SECRET,
       resave: false,
       saveUninitialized: true,
