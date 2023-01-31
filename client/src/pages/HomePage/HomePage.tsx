@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useRef } from "react";
-import "react-input-range/lib/css/index.css";
 import Form from "../../components/Form";
 import ListItem from "../../components/ListItem";
 import Ninja from "../../components/Ninja";
