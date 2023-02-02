@@ -18,6 +18,10 @@ const Form = ({
     }
   }, [pubKey, onSubmit]);
 
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setPubKey(e.target.value);
+  };
+
   return (
     <div className="form">
       <form className="form__form">
@@ -31,9 +35,7 @@ const Form = ({
           id="pubKey"
           placeholder="pubKey"
           value={pubKey}
-          onChange={(e) => {
-            setPubKey(e.target.value);
-          }}
+          onChange={handleInputChange}
           type="text"
         />
       </form>

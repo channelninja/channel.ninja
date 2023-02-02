@@ -2,10 +2,8 @@ import { useCallback, useEffect, useRef } from "react";
 import Form from "../../components/Form";
 import ListItem from "../../components/ListItem";
 import Ninja from "../../components/Ninja";
-import {
-  invalidPubKey,
-  resetTooltip,
-} from "../../components/Ninja/tooltip-slice";
+import { useTimeoutTooltip } from "../../components/Ninja/hooks/use-timeout-tooltip";
+import { TooltipKey } from "../../components/Ninja/tooltip.enum";
 import Node from "../../components/Node";
 import NodeInfo from "../../components/NodeInfo";
 import Social from "../../components/Social";
@@ -34,6 +32,7 @@ const HomePage = () => {
   const state = useAppSelector((state) => state.global);
   const dispatch = useAppDispatch();
   const intervalRef = useRef<NodeJS.Timer>();
+  const setTooltip = useTimeoutTooltip();
 
   useEffect(() => {
     socket?.on("lnd:invoice-confirmed", (id) => {
@@ -110,22 +109,26 @@ const HomePage = () => {
         const nodeInfo = await LndService.getNodeInfo(pubKey);
 
         if (!nodeInfo) {
-          dispatch(invalidPubKey());
-          setTimeout(() => dispatch(resetTooltip()), 3000);
+          setTooltip(TooltipKey.INVALID_PUB_KEY);
           return;
         }
 
         dispatch(nodeInfoChanged(nodeInfo));
         dispatch(validPubKeyEntered(pubKey));
-
-        await fetchSuggestions({
-          pubKey,
-        });
       } catch (error) {
-        console.log(error);
+        setTooltip(TooltipKey.INVALID_PUB_KEY);
+        return;
+      }
+
+      try {
+        if (pubKey) {
+          await fetchSuggestions({ pubKey });
+        }
+      } catch (error) {
+        setTooltip(TooltipKey.GRAPH_NOT_READY, 10000);
       }
     },
-    [dispatch, fetchSuggestions]
+    [dispatch, setTooltip, fetchSuggestions]
   );
 
   return (

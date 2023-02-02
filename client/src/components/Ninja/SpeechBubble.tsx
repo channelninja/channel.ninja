@@ -7,9 +7,9 @@ import {
 } from "../../redux/global-slice";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { CHANNEL_NINJA_PUB_KEY } from "../../utils/global-constants";
+import { useTimeoutTooltip } from "./hooks/use-timeout-tooltip";
 import { NinjaText } from "./ninja-text.enum";
 import { selectNinjaText } from "./ninja-text.selector";
-import { qrCodeClicked, resetTooltip } from "./tooltip-slice";
 import { TooltipKey } from "./tooltip.enum";
 
 const SpeechBubble = () => {
@@ -21,6 +21,7 @@ const SpeechBubble = () => {
   const [useWebLN, setUseWebLN] = useState(true);
   const isMaintenanceMode = useAppSelector(selectIsMaintenanceMode);
   const fee = useAppSelector(selectFee);
+  const setTooltip = useTimeoutTooltip();
 
   useEffect(() => {
     (async () => {
@@ -43,14 +44,12 @@ const SpeechBubble = () => {
   const handleQRCodeClick = useCallback(async () => {
     await navigator.clipboard.writeText(invoice?.request || "");
 
-    dispatch(qrCodeClicked());
-
-    setTimeout(() => dispatch(resetTooltip()), 3000);
+    setTooltip(TooltipKey.QR_CODE_CLICKED);
 
     if (process.env.NODE_ENV !== "production") {
       setTimeout(() => dispatch(invoicePaid()), 5000);
     }
-  }, [dispatch, invoice]);
+  }, [dispatch, invoice, setTooltip]);
 
   const tooltip = useMemo(() => {
     switch (tooltipKey) {
@@ -81,6 +80,13 @@ const SpeechBubble = () => {
         );
       case TooltipKey.ADDRESS_CLICKED:
         return <p>Address copied to clipboard.</p>;
+      case TooltipKey.GRAPH_NOT_READY:
+        return (
+          <p>
+            I'm updating my network graph at the moment. Please try again in a
+            few minutes
+          </p>
+        );
       default:
         return undefined;
     }

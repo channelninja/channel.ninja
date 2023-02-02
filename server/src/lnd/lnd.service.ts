@@ -1,4 +1,4 @@
-import { forwardRef, HttpException, Inject, Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
 import {
   AuthenticatedLnd,
@@ -39,8 +39,7 @@ export class LndService {
         is_omitting_channels: true,
       });
     } catch (error) {
-      console.error(error);
-      throw new HttpException('Could not get node info.', 500);
+      throw new NotFoundException();
     }
   }
 

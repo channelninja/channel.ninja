@@ -1,18 +1,29 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { TooltipKey } from "./tooltip.enum";
 
 export type TooltipState = {
   key: TooltipKey | undefined;
+  timeoutId?: NodeJS.Timeout;
 };
 
 const initialState: TooltipState = {
   key: undefined,
+  timeoutId: undefined,
 };
 
 export const tooltipSlice = createSlice({
   name: "tooltip",
   initialState,
   reducers: {
+    timeoutIdChanged: (state, action: PayloadAction<NodeJS.Timeout>) => {
+      state.timeoutId = action.payload;
+    },
+    tooltipChanged: (state, action: PayloadAction<TooltipKey>) => {
+      state.key = action.payload;
+    },
+    graphNotReady: (state) => {
+      state.key = TooltipKey.GRAPH_NOT_READY;
+    },
     invalidPubKey: (state) => {
       state.key = TooltipKey.INVALID_PUB_KEY;
     },
@@ -46,6 +57,9 @@ export const {
   invalidPubKey,
   connectionsMouseEntered,
   addressClicked,
+  graphNotReady,
+  tooltipChanged,
+  timeoutIdChanged,
 } = tooltipSlice.actions;
 
 export default tooltipSlice.reducer;

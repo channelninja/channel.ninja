@@ -7,6 +7,7 @@ import Socket from "./Socket";
 
 const Node = ({ node }: { node: NodeResponseDto }) => {
   const dispatch = useAppDispatch();
+
   const handleConnectionsMouseEnter = () => {
     dispatch(connectionsMouseEntered());
   };
@@ -14,6 +15,7 @@ const Node = ({ node }: { node: NodeResponseDto }) => {
   const handleTooltipReset = () => {
     dispatch(resetTooltip());
   };
+
   return (
     <div id={node.id} className="node">
       <div className="node__headline-container">

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { GetNetworkGraphResult } from 'lightning';
 import { LndService } from 'src/lnd/lnd.service';
 import { EdgeResponseDto } from './dtos/edge-response.dto';
@@ -64,9 +64,9 @@ export class GraphService {
 
   public getNodes({ start }: { start: string }): NodeResponseDto[] {
     if (!this.graphData) {
-      console.log('Graph not ready yet');
+      console.log('Graph is not ready yet');
 
-      return [];
+      throw new NotFoundException('Graph is not ready yet.');
     }
 
     const nodes = this.breadthFirstTraveral({ start });
