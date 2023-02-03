@@ -1,9 +1,7 @@
-import { useAppDispatch } from "../../redux/hooks";
 import { useTimeoutTooltip } from "../Ninja/hooks/use-timeout-tooltip";
 import { TooltipKey } from "../Ninja/tooltip.enum";
 
 const Socket = ({ pubkey, socket }: { pubkey: string; socket: string }) => {
-  const dispatch = useAppDispatch();
   const setTooltip = useTimeoutTooltip();
 
   const ipAndPortRegex =
