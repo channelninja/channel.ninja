@@ -7,7 +7,7 @@ import { GraphService } from 'src/graph/graph.service';
 export class SuggestionsService {
   constructor(private graphService: GraphService) {}
 
-  public getSuggestions(start: string): NodeResponseDto[] {
+  public async getSuggestions(start: string): Promise<NodeResponseDto[]> {
     const nodes = this.graphService.getNodes({ start });
 
     const filteredNodes = nodes.filter((node) => {
@@ -33,7 +33,7 @@ export class SuggestionsService {
       return true;
     });
 
-    const edges = this.graphService.getEdges(filteredNodes);
+    const edges = await this.graphService.getEdges(filteredNodes);
 
     const interConnectedNodes = new Map<string, number>();
 

@@ -1,10 +1,14 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { GetNetworkGraphResult } from 'lightning';
+import { Cron } from '@nestjs/schedule';
+import { InjectRepository } from '@nestjs/typeorm';
 import { LndService } from 'src/lnd/lnd.service';
+import { Repository } from 'typeorm';
 import { EdgeResponseDto } from './dtos/edge-response.dto';
 import { NodeResponseDto } from './dtos/node-response.dto';
+import { Channel } from './entities/channel.entity';
+import { Node } from './entities/node.entity';
 
-type Node = {
+type NodeT = {
   pubKey: string;
   alias: string;
   color: string;
@@ -13,57 +17,120 @@ type Node = {
   minChannelSize: number;
   maxChannelSize: number;
   sockets: string[];
-  peers: Set<Node>;
+  peers: Set<NodeT>;
 };
 
-type NodeMap = Map<string, Node>;
+type NodeMap = Map<string, NodeT>;
 
 @Injectable()
 export class GraphService {
   private nodesMap: NodeMap;
-  private graphData: GetNetworkGraphResult;
 
-  constructor(private lndService: LndService) {
-    this.lndService.getGraph().then((graphData) => {
-      this.nodesMap = new Map();
-      this.graphData = graphData;
+  constructor(
+    private lndService: LndService,
+    @InjectRepository(Channel) private channelRepository: Repository<Channel>,
+    @InjectRepository(Node) private nodeRepository: Repository<Node>,
+  ) {
+    this.nodesMap = new Map();
 
-      this.graphData.nodes.forEach(({ public_key, alias, color, updated_at, sockets }) => {
-        this.nodesMap.set(public_key, {
-          alias,
-          pubKey: public_key,
-          color,
-          lastUpdate: new Date(updated_at).valueOf(),
-          capacity: 0,
-          minChannelSize: Infinity,
-          maxChannelSize: 0,
-          peers: new Set<Node>(),
-          sockets,
-        });
-      });
+    this.nodeRepository.count().then((count) => {
+      if (count === 0) {
+        this.updateGraphInDB();
+      }
+    });
 
-      this.graphData.channels.forEach(({ policies, capacity }) => {
-        const node1 = this.nodesMap.get(policies[0].public_key);
-        const node2 = this.nodesMap.get(policies[1].public_key);
+    this.updateGraphInMemory();
+  }
 
-        if (!node1 || !node2) {
-          return;
-        }
+  // every hour
+  @Cron('*/30 * * * *')
+  public async updateGraph(): Promise<void> {
+    if (process.env.NODE_ENV !== 'production') {
+      return;
+    }
 
-        node1.minChannelSize = capacity < node1.minChannelSize ? capacity : node1.minChannelSize;
-        node1.maxChannelSize = capacity > node1.maxChannelSize ? capacity : node1.maxChannelSize;
+    await this.updateGraphInDB();
+    await this.updateGraphInMemory();
+  }
 
-        node1.capacity = node1.capacity + capacity;
-        node2.capacity = node2.capacity + capacity;
+  public async updateGraphInMemory(): Promise<void> {
+    console.time('updateGraphInMemory');
 
-        node1.peers.add(node2);
-        node2.peers.add(node1);
+    const nodes = await this.nodeRepository.find();
+    const channels = await this.channelRepository.find();
+
+    nodes.forEach(({ public_key, alias, color, updated_at, sockets }) => {
+      this.nodesMap.set(public_key, {
+        alias,
+        pubKey: public_key,
+        color,
+        lastUpdate: new Date(updated_at).valueOf(),
+        capacity: 0,
+        minChannelSize: Infinity,
+        maxChannelSize: 0,
+        peers: new Set<NodeT>(),
+        sockets: JSON.parse(sockets),
       });
     });
+
+    channels.forEach(({ source_public_key, target_public_key, capacity }) => {
+      const node1 = this.nodesMap.get(source_public_key);
+      const node2 = this.nodesMap.get(target_public_key);
+
+      if (!node1 || !node2) {
+        return;
+      }
+
+      node1.minChannelSize = capacity < node1.minChannelSize ? capacity : node1.minChannelSize;
+      node1.maxChannelSize = capacity > node1.maxChannelSize ? capacity : node1.maxChannelSize;
+
+      node1.capacity = node1.capacity + capacity;
+      node2.capacity = node2.capacity + capacity;
+
+      node1.peers.add(node2);
+      node2.peers.add(node1);
+    });
+
+    console.timeEnd('updateGraphInMemory');
+  }
+
+  public async updateGraphInDB(): Promise<void> {
+    const graphData = await this.lndService.fetchNetworkGraph();
+
+    console.time('updateGraphInDB');
+    for (const node of graphData.nodes) {
+      if (!node.updated_at || !node.alias || node.sockets.length === 0) {
+        continue;
+      }
+
+      await this.nodeRepository.save({
+        alias: node.alias,
+        color: node.color,
+        public_key: node.public_key,
+        sockets: JSON.stringify(node.sockets),
+        updated_at: new Date(node.updated_at),
+      });
+    }
+
+    for (const channel of graphData.channels) {
+      if (!channel.updated_at) {
+        continue;
+      }
+
+      await this.channelRepository.save({
+        capacity: channel.capacity,
+        source_public_key: channel.policies[0].public_key,
+        target_public_key: channel.policies[1].public_key,
+        id: channel.id,
+        transaction_id: channel.transaction_id,
+        updated_at: new Date(channel.updated_at),
+      });
+    }
+    console.timeEnd('updateGraphInDB');
   }
 
   public getNodes({ start }: { start: string }): NodeResponseDto[] {
-    if (!this.graphData) {
+    if (this.nodesMap.size === 0) {
       console.log('Graph is not ready yet');
 
       throw new NotFoundException('Graph is not ready yet.');
@@ -74,14 +141,16 @@ export class GraphService {
     return nodes;
   }
 
-  public getEdges(nodes: NodeResponseDto[]): EdgeResponseDto[] {
+  public async getEdges(nodes: NodeResponseDto[]): Promise<EdgeResponseDto[]> {
     const edgeResponseDto: EdgeResponseDto[] = [];
     const rawNodes = nodes.map((node) => node.id);
     const edgeSet = new Set<string>();
 
-    this.graphData.channels.forEach(({ policies }) => {
-      if (rawNodes.includes(policies[0].public_key) && rawNodes.includes(policies[1].public_key)) {
-        edgeSet.add(`${policies[0].public_key}_${policies[1].public_key}`);
+    const channels = await this.channelRepository.find();
+
+    channels.forEach(({ source_public_key, target_public_key }) => {
+      if (rawNodes.includes(source_public_key) && rawNodes.includes(target_public_key)) {
+        edgeSet.add(`${source_public_key}_${target_public_key}`);
       }
     });
 
@@ -96,7 +165,7 @@ export class GraphService {
   private breadthFirstTraveral({ start }: { start: string }): NodeResponseDto[] {
     const startNode = this.nodesMap.get(start);
 
-    const queue: Node[] = [];
+    const queue: NodeT[] = [];
     queue.push(startNode);
 
     const visited = new Set<string>();

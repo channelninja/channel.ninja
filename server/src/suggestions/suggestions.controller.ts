@@ -12,7 +12,7 @@ export class SuggestionsController {
     description: 'Returns suggested nodes for :start node',
   })
   @Get('/:start')
-  public getSuggestions(@Param('start') start: string): NodeResponseDto[] {
-    return this.suggestionsService.getSuggestions(start);
+  public async getSuggestions(@Param('start') start: string): Promise<NodeResponseDto[]> {
+    return await this.suggestionsService.getSuggestions(start);
   }
 }

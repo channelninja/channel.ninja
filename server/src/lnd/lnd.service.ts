@@ -1,5 +1,4 @@
 import { forwardRef, Inject, Injectable, NotFoundException } from '@nestjs/common';
-import { Cron } from '@nestjs/schedule';
 import {
   AuthenticatedLnd,
   authenticatedLndGrpc,
@@ -19,9 +18,8 @@ import { LndGateway } from './lnd.gateway';
 @Injectable()
 export class LndService {
   private lnd: AuthenticatedLnd;
-  private graph: GetNetworkGraphResult;
 
-  constructor(@Inject(forwardRef(() => LndGateway)) private lndGateWay: LndGateway, private feesService: FeesService) {
+  constructor(private feesService: FeesService, @Inject(forwardRef(() => LndGateway)) private lndGateWay: LndGateway) {
     const { lnd } = authenticatedLndGrpc({
       cert: '',
       macaroon: process.env.MACAROON,
@@ -43,27 +41,14 @@ export class LndService {
     }
   }
 
-  public async getGraph(): Promise<GetNetworkGraphResult> {
-    if (this.graph) {
-      return this.graph;
-    }
+  public async fetchNetworkGraph(): Promise<GetNetworkGraphResult> {
+    console.time('fetchNetworkGraph');
 
-    return this.fetchNetworkGraph();
-  }
+    const graphData = await getNetworkGraph({ lnd: this.lnd });
 
-  @Cron('0 7 * * *')
-  private async fetchNetworkGraph(): Promise<GetNetworkGraphResult> {
-    console.log('fetchNetworkGraph');
+    console.timeEnd('fetchNetworkGraph');
 
-    if (process.env.NODE_ENV === 'production' || process.env.FORCE_FETCH_GRAPH === 'true') {
-      this.graph = await getNetworkGraph({ lnd: this.lnd });
-    } else {
-      this.graph = (await import('./data/graph.json')) as unknown as GetNetworkGraphResult;
-    }
-
-    console.log('Graph fetched!');
-
-    return this.graph;
+    return graphData;
   }
 
   public async getOrCreateInvoice(invoiceId?: string): Promise<LndInvoiceResponseDto> {
