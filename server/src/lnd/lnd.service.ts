@@ -42,6 +42,7 @@ export class LndService {
   }
 
   public async fetchNetworkGraph(): Promise<GetNetworkGraphResult> {
+    console.log('fetchNetworkGraph');
     console.time('fetchNetworkGraph');
 
     const graphData = await getNetworkGraph({ lnd: this.lnd });

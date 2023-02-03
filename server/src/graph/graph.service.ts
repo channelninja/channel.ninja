@@ -35,7 +35,7 @@ export class GraphService {
 
     this.nodeRepository.count().then((count) => {
       if (count === 0) {
-        this.updateGraphInDB();
+        this.updateGraph(true);
       }
     });
 
@@ -44,10 +44,13 @@ export class GraphService {
 
   // every hour
   @Cron('*/30 * * * *')
-  public async updateGraph(): Promise<void> {
-    if (process.env.NODE_ENV !== 'production') {
+  public async updateGraph(force?: boolean): Promise<void> {
+    console.log('updateGraph');
+
+    if (process.env.NODE_ENV !== 'production' && !force) {
       return;
     }
+    console.log('updateGraph still here?');
 
     await this.updateGraphInDB();
     await this.updateGraphInMemory();
