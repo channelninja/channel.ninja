@@ -44,7 +44,6 @@
     "class-validator": "^0.14.0",
     "express-session": "^1.17.3",
     "lightning": "^7.0.4",
-    "ln-service": "^54.5.0",
     "passport": "^0.6.0",
     "passport-http": "^0.3.0",
     "reflect-metadata": "^0.1.13",
