@@ -1941,10 +1941,10 @@
     jsonc-parser "3.2.0"
     pluralize "8.0.0"
 
-"@nestjs/serve-static@^3.0.0":
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/@nestjs/serve-static/-/serve-static-3.0.0.tgz#085e7ebbb3c6d6e35b227ea57c8e988c87847309"
-  integrity sha512-TpXjgs4136dQqWUjEcONqppqXDsrJhRkmKWzuBMOUAnP4HjHpNmlycvkHnDnWSoG2YD4a7Enh4ViYGWqCfHStA==
+"@nestjs/serve-static@^3.0.1":
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/@nestjs/serve-static/-/serve-static-3.0.1.tgz#d7d736b47171923d9e87262e19cc58ade8f4ba56"
+  integrity sha512-i766UJPYOqvQ2BbRKh0/+Mmq5NkJnmKcShjWV1i5qpXyeM0KDZTn0n7g7ykWq/3LbQgjpMzrhYtGv35GX7GVQw==
   dependencies:
     path-to-regexp "0.2.5"
 
