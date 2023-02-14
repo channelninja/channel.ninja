@@ -13,15 +13,24 @@
     "start:client": "npm run start --prefix client",
     "build": "npm run build --prefix client && npm run build --prefix server",
     "start:dev": "concurrently -n client,server -c magenta,cyan \"npm run start:client\" \"npm run start:server\"",
-    "start:prod": "npm run start:prod --prefix server"
+    "start:prod": "npm run start:prod --prefix server",
+    "commit": "cz"
   },
   "author": "",
   "license": "MIT",
   "types": "./server/dist/main.d.ts",
   "devDependencies": {
-    "concurrently": "^7.6.0"
+    "@commitlint/config-conventional": "^17.4.3",
+    "commitizen": "^4.3.0",
+    "concurrently": "^7.6.0",
+    "cz-conventional-changelog": "^3.3.0"
   },
   "resolutions": {
     "**/@nestjs/axios/axios": "1.2.4"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
   }
 }

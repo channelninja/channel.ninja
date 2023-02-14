@@ -31,3 +31,14 @@ $ yarn start:dev
 $ yarn build
 $ yarn start:prod
 ```
+
+## Contributing
+
+Please use <a href='https://www.conventionalcommits.org/en/v1.0.0/'>Conventional Commits</a>. Commit messages will be linted and rejected if they don't follow the convention.
+
+To help with commit messages use:
+
+```bash
+$ yarn commit
+```
+
