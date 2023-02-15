@@ -8171,10 +8171,10 @@ libphonenumber-js@^1.10.14:
   resolved "https://registry.npmjs.org/libphonenumber-js/-/libphonenumber-js-1.10.15.tgz"
   integrity sha512-sLeVLmWX17VCKKulc+aDIRHS95TxoTsKMRJi5s5gJdwlqNzMWcBCtSHHruVyXjqfi67daXM2SnLf2juSrdx5Sg==
 
-lightning@^7.0.6:
-  version "7.0.6"
-  resolved "https://registry.npmjs.org/lightning/-/lightning-7.0.6.tgz"
-  integrity sha512-Bpbx8H9FqUwRps/UWS7sW16sm8UjS/gPKbEMFheRnHna4SBF+bWMiR3Ub/IfE80x+Vi12WZfGnWWR4IIRh1bzw==
+lightning@^7.0.7:
+  version "7.0.7"
+  resolved "https://registry.yarnpkg.com/lightning/-/lightning-7.0.7.tgz#355adb3e7fd3ee809c46de03ccd3ee47d9d1684d"
+  integrity sha512-OrfxqVNNLdTQsu8y5pImLU6nhSSAwcBAB3h+RisXCHOwmXIVVcnz20FZCXoYqQRNiXo1R0NcOt2ma1AtCpn4XA==
   dependencies:
     "@grpc/grpc-js" "1.8.8"
     "@grpc/proto-loader" "0.7.5"
