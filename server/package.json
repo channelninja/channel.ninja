@@ -34,7 +34,7 @@
     "@nestjs/platform-socket.io": "^9.3.9",
     "@nestjs/schedule": "^2.1.0",
     "@nestjs/serve-static": "^3.0.1",
-    "@nestjs/swagger": "^6.1.4",
+    "@nestjs/swagger": "^6.2.1",
     "@nestjs/typeorm": "^9.0.1",
     "@nestjs/websockets": "^9.2.1",
     "@nicholas.braun/nestjs-redoc": "^2.2.3",
