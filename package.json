@@ -20,10 +20,12 @@
   "license": "MIT",
   "types": "./server/dist/main.d.ts",
   "devDependencies": {
+    "@commitlint/cli": "^17.4.3",
     "@commitlint/config-conventional": "^17.4.3",
     "commitizen": "^4.3.0",
     "concurrently": "^7.6.0",
-    "cz-conventional-changelog": "^3.3.0"
+    "cz-conventional-changelog": "^3.3.0",
+    "husky": "^8.0.3"
   },
   "resolutions": {
     "**/@nestjs/axios/axios": "1.2.4"
