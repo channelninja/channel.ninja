@@ -4,7 +4,7 @@
   "private": true,
   "proxy": "http://localhost:3001",
   "dependencies": {
-    "@reduxjs/toolkit": "^1.9.1",
+    "@reduxjs/toolkit": "^1.9.2",
     "lightning": "^7.0.7",
     "qrcode.react": "^3.1.0",
     "react": "^18.2.0",
