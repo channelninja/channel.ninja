@@ -46,7 +46,7 @@
     "@types/jest": "^29.4.0",
     "@types/node": "^16.18.8",
     "@types/react": "^18.0.28",
-    "@types/react-dom": "^18.0.9",
+    "@types/react-dom": "^18.0.11",
     "@types/throttle-debounce": "^5.0.0",
     "@webbtc/webln-types": "^1.0.10",
     "openapi-typescript-codegen": "^0.23.0",
