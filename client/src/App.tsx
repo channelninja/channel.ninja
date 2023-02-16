@@ -13,8 +13,15 @@ function App() {
   useEffect(() => {
     const init = async () => {
       const initialSettings = await InitService.init();
+      let availableWebLNMethods: string[] = [];
 
-      dispatch(initApp(initialSettings));
+      if (window.webln) {
+        await window.webln.enable();
+        const info = await window.webln.getInfo();
+
+        availableWebLNMethods = info.methods;
+      }
+      dispatch(initApp({ ...initialSettings, availableWebLNMethods }));
     };
 
     init();

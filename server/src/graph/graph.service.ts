@@ -7,6 +7,7 @@ import { EdgeResponseDto } from './dtos/edge-response.dto';
 import { NodeResponseDto } from './dtos/node-response.dto';
 import { Channel } from './entities/channel.entity';
 import { Node } from './entities/node.entity';
+import { TWO_WEEKS } from './graph.constants';
 
 type NodeT = {
   pubKey: string;
@@ -34,7 +35,7 @@ export class GraphService {
     this.nodesMap = new Map();
 
     this.nodeRepository.count().then((count) => {
-      if (count === 0) {
+      if (count === 0 || process.env.FORCE_FETCH_GRAPH === 'true') {
         this.updateGraph(true);
       }
     });
@@ -42,15 +43,14 @@ export class GraphService {
     this.updateGraphInMemory();
   }
 
-  // every hour
-  @Cron('*/30 * * * *')
+  // every 10 minutes
+  @Cron('*/10 * * * *')
   public async updateGraph(force?: boolean): Promise<void> {
     console.log('updateGraph');
 
     if (process.env.NODE_ENV !== 'production' && !force) {
       return;
     }
-    console.log('updateGraph still here?');
 
     await this.updateGraphInDB();
     await this.updateGraphInMemory();
@@ -100,9 +100,16 @@ export class GraphService {
   public async updateGraphInDB(): Promise<void> {
     const graphData = await this.lndService.fetchNetworkGraph();
 
+    try {
+      await this.nodeRepository.clear();
+      await this.channelRepository.clear();
+    } catch (error) {
+      console.log(error);
+    }
+
     console.time('updateGraphInDB');
     for (const node of graphData.nodes) {
-      if (!node.updated_at || !node.alias || node.sockets.length === 0) {
+      if (!node.updated_at || !node.alias || Date.now() - new Date(node.updated_at).valueOf() >= TWO_WEEKS) {
         continue;
       }
 
@@ -116,7 +123,7 @@ export class GraphService {
     }
 
     for (const channel of graphData.channels) {
-      if (!channel.updated_at) {
+      if (!channel.updated_at || Date.now() - new Date(channel.updated_at).valueOf() >= TWO_WEEKS) {
         continue;
       }
 

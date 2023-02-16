@@ -8,6 +8,7 @@ export type { OpenAPIConfig } from './core/OpenAPI';
 
 export type { FeeAmountDto } from './models/FeeAmountDto';
 export { FeeUnitDto } from './models/FeeUnitDto';
+export type { GetOnchainFeesEstimate } from './models/GetOnchainFeesEstimate';
 export type { GetSettingsResponseDto } from './models/GetSettingsResponseDto';
 export type { InitResponseDto } from './models/InitResponseDto';
 export type { LndInvoiceResponseDto } from './models/LndInvoiceResponseDto';
@@ -16,6 +17,7 @@ export type { NodeInfoDto } from './models/NodeInfoDto';
 export type { NodeResponseDto } from './models/NodeResponseDto';
 export type { SocketDto } from './models/SocketDto';
 
+export { FeesService } from './services/FeesService';
 export { InitService } from './services/InitService';
 export { LndService } from './services/LndService';
 export { SettingsService } from './services/SettingsService';

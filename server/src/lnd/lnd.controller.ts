@@ -13,11 +13,7 @@ export class LndController {
     description: 'Creates an invoice',
   })
   @Post('/invoice')
-  public async createInvoice(
-    @Session() session: Record<string, string>,
-  ): Promise<LndInvoiceResponseDto> {
-    console.log('session.invoiceId', session.invoiceId);
-
+  public async createInvoice(@Session() session: Record<string, string>): Promise<LndInvoiceResponseDto> {
     const invoice = await this.lndService.getOrCreateInvoice(session.invoiceId);
     session.invoiceId = invoice.id;
 
@@ -28,9 +24,7 @@ export class LndController {
     description: 'Gets the node info',
   })
   @Get('/nodeInfo/:pubkey')
-  public async getNodeInfo(
-    @Param('pubkey') pubkey: string,
-  ): Promise<NodeInfoDto> {
+  public async getNodeInfo(@Param('pubkey') pubkey: string): Promise<NodeInfoDto> {
     return this.lndService.getNodeInfo(pubkey);
   }
 }

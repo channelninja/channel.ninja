@@ -1,12 +1,15 @@
-import { NodeResponseDto } from "../../generated";
-import { useAppDispatch } from "../../redux/hooks";
-import Info from "../Info/Info";
-import { connectionsMouseEntered, resetTooltip } from "../Ninja/tooltip-slice";
-import "./node.css";
-import Socket from "./Socket";
+import { openChannelTargetNodeChanged, selectIsOpenChannelAvailable } from '../../features/WebLN/web-ln-slice';
+import { NodeResponseDto } from '../../generated';
+import { useAppDispatch, useAppSelector } from '../../redux/hooks';
+import Button from '../Button/Button';
+import Info from '../Info/Info';
+import { connectionsMouseEntered, resetTooltip } from '../Ninja/tooltip-slice';
+import './node.css';
+import Socket from './Socket';
 
 const Node = ({ node }: { node: NodeResponseDto }) => {
   const dispatch = useAppDispatch();
+  const isOpenChannelAvailable = useAppSelector(selectIsOpenChannelAvailable);
 
   const handleConnectionsMouseEnter = () => {
     dispatch(connectionsMouseEntered());
@@ -16,8 +19,15 @@ const Node = ({ node }: { node: NodeResponseDto }) => {
     dispatch(resetTooltip());
   };
 
+  const handleOpenChannelClick = () => {
+    dispatch(openChannelTargetNodeChanged(node));
+  };
+
   return (
-    <div id={node.id} className="node">
+    <div
+      id={node.id}
+      className="node bg-neutral-900"
+    >
       <div className="node__headline-container">
         <a
           href={`https://amboss.space/node/${node.id}`}
@@ -33,8 +43,7 @@ const Node = ({ node }: { node: NodeResponseDto }) => {
         <div className="node__meta">
           <div className="node__meta-title">number of channels</div>
           <div className="node__meta-data">
-            <span className="node__meta-data--bold">{node.channelCount}</span>{" "}
-            channels
+            <span className="node__meta-data--bold">{node.channelCount}</span> channels
           </div>
         </div>
 
@@ -47,7 +56,7 @@ const Node = ({ node }: { node: NodeResponseDto }) => {
 
         <div className="node__meta">
           <div className="node__meta-title">
-            connections{" "}
+            connections{' '}
             <Info
               onMouseEnter={handleConnectionsMouseEnter}
               onMouseLeave={handleTooltipReset}
@@ -62,9 +71,7 @@ const Node = ({ node }: { node: NodeResponseDto }) => {
           <div className="node__meta-title">last updated</div>
           <div className="node__meta-data">
             <span className="node__meta-data--bold">
-              {node.lastUpdate
-                ? new Date(node.lastUpdate).toDateString()
-                : "unknown"}
+              {node.lastUpdate ? new Date(node.lastUpdate).toDateString() : 'unknown'}
             </span>
           </div>
         </div>
@@ -72,9 +79,7 @@ const Node = ({ node }: { node: NodeResponseDto }) => {
         <div className="node__meta">
           <div className="node__meta-title">capacity</div>
           <div className="node__meta-data">
-            <span className="node__meta-data--bold">
-              {node.capacity?.toLocaleString("en-US") || "-"}
-            </span>
+            <span className="node__meta-data--bold">{node.capacity?.toLocaleString('en-US') || '-'}</span>
             sats
           </div>
         </div>
@@ -82,9 +87,7 @@ const Node = ({ node }: { node: NodeResponseDto }) => {
         <div className="node__meta">
           <div className="node__meta-title">max channel size</div>
           <div className="node__meta-data">
-            <span className="node__meta-data--bold">
-              {node.maxChannelSize?.toLocaleString("en-US") || "-"}
-            </span>
+            <span className="node__meta-data--bold">{node.maxChannelSize?.toLocaleString('en-US') || '-'}</span>
             sats
           </div>
         </div>
@@ -92,9 +95,7 @@ const Node = ({ node }: { node: NodeResponseDto }) => {
         <div className="node__meta">
           <div className="node__meta-title">min channel size</div>
           <div className="node__meta-data">
-            <span className="node__meta-data--bold">
-              {node.minChannelSize?.toLocaleString("en-US") || "-"}
-            </span>
+            <span className="node__meta-data--bold">{node.minChannelSize?.toLocaleString('en-US') || '-'}</span>
             sats
           </div>
         </div>
@@ -102,9 +103,7 @@ const Node = ({ node }: { node: NodeResponseDto }) => {
         <div className="node__meta">
           <div className="node__meta-title">avg channel size</div>
           <div className="node__meta-data">
-            <span className="node__meta-data--bold">
-              {node.avgChannelSize?.toLocaleString("en-US") || "-"}
-            </span>
+            <span className="node__meta-data--bold">{node.avgChannelSize?.toLocaleString('en-US') || '-'}</span>
             sats
           </div>
         </div>
@@ -113,10 +112,25 @@ const Node = ({ node }: { node: NodeResponseDto }) => {
       <div className="node__sockets-container">
         <ul className="node__sockets-list">
           {node.sockets.map((socket, i) => (
-            <li key={i} className="node__sockets-list-item">
-              <Socket socket={socket} pubkey={node.id} />
+            <li
+              key={i}
+              className="node__sockets-list-item"
+            >
+              <Socket
+                socket={socket}
+                pubkey={node.id}
+              />
             </li>
           ))}
+
+          {window?.webln && node.sockets.length && isOpenChannelAvailable ? (
+            <li
+              key={node.sockets.length}
+              className="node__sockets-list-item"
+            >
+              <Button onPress={handleOpenChannelClick}>open channel</Button>
+            </li>
+          ) : null}
         </ul>
       </div>
     </div>

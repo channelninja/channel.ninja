@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 @font-face {
   font-family: Pixeloid;
   src: url(../../public/fonts/PixeloidSansBold.ttf);
@@ -9,12 +13,13 @@
 
 html {
   font-size: 62.5%;
-  font-family: 'Courier New', Courier, monospace;
+  font-family: "Courier New", Courier, monospace;
   color: #fff;
   height: var(--document-height);
 }
 
-body { font-size: 1.4rem; /* =14px */
+body {
+  font-size: 1.4rem; /* =14px */
   background-color: #2e333b;
   height: 100%;
 }
@@ -27,11 +32,17 @@ body { font-size: 1.4rem; /* =14px */
   height: 100%;
 }
 
-input, button {
+input,
+button {
   color: #000;
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   margin: 0;
   padding: 0;
 }

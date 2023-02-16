@@ -87,6 +87,10 @@ const SpeechBubble = () => {
             few minutes
           </p>
         );
+      case TooltipKey.CHANNEL_OPENED:
+        return <p>Channel opened successfully</p>;
+      case TooltipKey.CHANNEL_OPENED_FAIL:
+        return <p>Could not open channel.</p>;
       default:
         return undefined;
     }
@@ -135,6 +139,13 @@ const SpeechBubble = () => {
         );
       case NinjaText.NO_NODES_FOUND:
         return <p>No nodes found. Try again later.</p>;
+      case NinjaText.OPEN_CHANNEL:
+        return (
+          <p>
+            Set the desired channel capacity and the fee of the funding
+            transaction to open a channel.
+          </p>
+        );
       default:
         return (
           <p>

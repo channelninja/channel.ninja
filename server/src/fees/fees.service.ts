@@ -7,9 +7,10 @@ import { SATS_IN_ONE_BITCOIN } from 'src/core/global-constans';
 import { FeeUnit } from 'src/settings/dto/fee-unit.dto';
 import { SettingsService } from 'src/settings/settings.service';
 import { Repository } from 'typeorm';
-import { CoinApiResponse } from './coin-api-response.type';
 import { DEFAULT_FEE } from './default-fee.constant';
+import { GetOnchainFeesEstimate } from './dtos/GetOnchainFeesEstimateResult.dto';
 import { Fee } from './fee.entity';
+import { CoinApiResponse } from './fee.types';
 
 @Injectable()
 export class FeesService {
@@ -25,6 +26,18 @@ export class FeesService {
     const fee = await this.calculateFeeFromSettings();
 
     await this.feesRepository.save(this.feesRepository.create({ id: 1, fee }));
+  }
+
+  public async getOnchainFeesEstimate(): Promise<GetOnchainFeesEstimate> {
+    try {
+      const res = await this.httpService.axiosRef.get<GetOnchainFeesEstimate>(
+        'https://mempool.space/api/v1/fees/recommended',
+      );
+
+      return res.data;
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   public async getFee(): Promise<number> {
