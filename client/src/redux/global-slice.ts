@@ -28,7 +28,12 @@ export const globalSlice = createSlice({
   name: "global",
   initialState,
   reducers: {
-    initApp: (state, action: PayloadAction<InitResponseDto>) => {
+    initApp: (
+      state,
+      action: PayloadAction<
+        InitResponseDto & { availableWebLNMethods: string[] }
+      >
+    ) => {
       state.isMaintenanceMode = action.payload.maintenance;
       state.fee = action.payload.fee;
     },

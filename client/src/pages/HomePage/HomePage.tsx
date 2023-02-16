@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef } from "react";
+import Dialog from "../../components/Dialog/Dialog";
 import Form from "../../components/Form";
 import ListItem from "../../components/ListItem";
 import Ninja from "../../components/Ninja";
@@ -8,6 +9,8 @@ import Node from "../../components/Node";
 import NodeInfo from "../../components/NodeInfo";
 import Social from "../../components/Social";
 import { useSockets } from "../../context/useSocket";
+import OpenChannelForm from "../../features/WebLN/components/OpenChannelForm";
+import { openChannelTargetNodeChanged } from "../../features/WebLN/web-ln-slice";
 import { LndService, SuggestionsService } from "../../generated";
 import {
   invoiceFetched,
@@ -33,13 +36,12 @@ const HomePage = () => {
   const dispatch = useAppDispatch();
   const intervalRef = useRef<NodeJS.Timer>();
   const setTooltip = useTimeoutTooltip();
+  const openChannelTargetNode = useAppSelector(
+    (state) => state.webLN.openChannelTargetNode
+  );
 
   useEffect(() => {
     socket?.on("lnd:invoice-confirmed", (id) => {
-      if (process.env.NODE_ENV !== "production") {
-        console.log(id, state.invoice);
-      }
-
       if (id === state.invoice?.id) {
         dispatch(invoicePaid());
       }
@@ -81,10 +83,6 @@ const HomePage = () => {
     }
 
     if (!state.invoice) {
-      if (process.env.NODE_ENV !== "production") {
-        console.log("no invoice");
-      }
-
       getInvoice();
     }
   }, [state.invoice, state.invoicePaid, state.nodes, getInvoice]);
@@ -131,6 +129,10 @@ const HomePage = () => {
     [dispatch, setTooltip, fetchSuggestions]
   );
 
+  const handleDialogCloseClick = () => {
+    dispatch(openChannelTargetNodeChanged(undefined));
+  };
+
   return (
     <div className="home">
       <div className="home__ninja">
@@ -148,23 +150,32 @@ const HomePage = () => {
           <Form onSubmit={handleFormSubmit} />
         </div>
 
-        <div className="home__content-inner">
-          {state.nodeInfo && !state.invoicePaid && state.pubKey && (
-            <div className="home__node-info">
-              <NodeInfo nodeInfo={state.nodeInfo} pubKey={state.pubKey} />
-            </div>
-          )}
+        {openChannelTargetNode ? (
+          <Dialog
+            title={`Open channel to ${openChannelTargetNode.alias}`}
+            onCloseClick={handleDialogCloseClick}
+          >
+            <OpenChannelForm node={openChannelTargetNode} />
+          </Dialog>
+        ) : (
+          <div className="overflow-y-auto">
+            {state.nodeInfo && !state.invoicePaid && state.pubKey && (
+              <div className="home__node-info">
+                <NodeInfo nodeInfo={state.nodeInfo} pubKey={state.pubKey} />
+              </div>
+            )}
 
-          {state.invoicePaid && state.nodes && (
-            <ul style={{ width: "100%" }}>
-              {state.nodes.map((node) => (
-                <ListItem key={node.id}>
-                  <Node node={node} />
-                </ListItem>
-              ))}
-            </ul>
-          )}
-        </div>
+            {!openChannelTargetNode && state.invoicePaid && state.nodes && (
+              <ul style={{ width: "100%" }}>
+                {state.nodes.map((node) => (
+                  <ListItem key={node.id}>
+                    <Node node={node} />
+                  </ListItem>
+                ))}
+              </ul>
+            )}
+          </div>
+        )}
       </div>
 
       <Social />

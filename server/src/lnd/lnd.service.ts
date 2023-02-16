@@ -1,4 +1,4 @@
-import { forwardRef, Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { forwardRef, Inject, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import {
   AuthenticatedLnd,
   authenticatedLndGrpc,
@@ -21,7 +21,7 @@ export class LndService {
 
   constructor(private feesService: FeesService, @Inject(forwardRef(() => LndGateway)) private lndGateWay: LndGateway) {
     const { lnd } = authenticatedLndGrpc({
-      cert: '',
+      cert: process.env.CERT ?? '',
       macaroon: process.env.MACAROON,
       socket: process.env.SOCKET,
     });
@@ -42,14 +42,18 @@ export class LndService {
   }
 
   public async fetchNetworkGraph(): Promise<GetNetworkGraphResult> {
-    console.log('fetchNetworkGraph');
-    console.time('fetchNetworkGraph');
+    try {
+      console.time('fetchNetworkGraph');
 
-    const graphData = await getNetworkGraph({ lnd: this.lnd });
+      const graphData = await getNetworkGraph({ lnd: this.lnd });
 
-    console.timeEnd('fetchNetworkGraph');
+      console.timeEnd('fetchNetworkGraph');
 
-    return graphData;
+      return graphData;
+    } catch (error) {
+      console.log(error);
+      throw new InternalServerErrorException('Could not fetch network graph');
+    }
   }
 
   public async getOrCreateInvoice(invoiceId?: string): Promise<LndInvoiceResponseDto> {

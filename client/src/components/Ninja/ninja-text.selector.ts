@@ -1,4 +1,5 @@
 import { createSelector } from "@reduxjs/toolkit";
+import { selectIsOpenChannelDialogOpen } from "../../features/WebLN/web-ln-slice";
 import {
   selectInvoice,
   selectInvoicePaid,
@@ -14,9 +15,21 @@ export const selectNinjaText = createSelector(
   selectInvoice,
   selectInvoicePaid,
   selectNodes,
-  (isSocketConnected, pubKey, invoice, invoicePaid, nodes) => {
+  selectIsOpenChannelDialogOpen,
+  (
+    isSocketConnected,
+    pubKey,
+    invoice,
+    invoicePaid,
+    nodes,
+    isOpenChannelDialogOpen
+  ) => {
     if (!isSocketConnected) {
       return NinjaText.CONNECTING;
+    }
+
+    if (isOpenChannelDialogOpen) {
+      return NinjaText.OPEN_CHANNEL;
     }
 
     if (!invoice && !invoicePaid) {

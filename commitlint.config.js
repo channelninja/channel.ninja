@@ -3,4 +3,5 @@ module.exports = {
   rules: {
     "body-max-line-length": [2, "always", 200],
   },
+  ignores: [(message) => message.includes("WIP")],
 };

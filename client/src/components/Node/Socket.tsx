@@ -1,3 +1,4 @@
+import Button from "../Button/Button";
 import { useTimeoutTooltip } from "../Ninja/hooks/use-timeout-tooltip";
 import { TooltipKey } from "../Ninja/tooltip.enum";
 
@@ -23,11 +24,7 @@ const Socket = ({ pubkey, socket }: { pubkey: string; socket: string }) => {
     setTooltip(TooltipKey.ADDRESS_CLICKED);
   };
 
-  return (
-    <button className="socket__button" onClick={handleClick}>
-      {text}
-    </button>
-  );
+  return <Button onPress={handleClick}>{text}</Button>;
 };
 
 export default Socket;
