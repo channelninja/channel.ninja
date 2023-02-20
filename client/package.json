@@ -15,7 +15,7 @@
     "react-query": "^3.39.3",
     "react-redux": "^8.0.5",
     "react-stately": "^3.20.0",
-    "socket.io-client": "^4.5.4",
+    "socket.io-client": "^4.6.0",
     "throttle-debounce": "^5.0.0",
     "typescript": "^4.9.5",
     "yup": "^1.0.0"
