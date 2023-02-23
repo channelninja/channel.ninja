@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.1](https://github.com/channelninja/channel.ninja/compare/v1.0.0...v1.0.1) (2023-02-23)
+
+
+### Bug Fixes
+
+* hotfix test ([ea7c6eb](https://github.com/channelninja/channel.ninja/commit/ea7c6eba80806db64cf680e838fe623c0e95fdce))
+
 ## 1.0.0 (2023-02-18)
 
 
