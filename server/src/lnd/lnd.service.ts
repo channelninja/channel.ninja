@@ -63,7 +63,7 @@ export class LndService {
       if (new Date(invoice.expires_at).valueOf() < Date.now()) {
         return await this.createInvoice();
       }
-
+      //test
       if (invoice) {
         return {
           id: invoice.id,
