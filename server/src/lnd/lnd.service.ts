@@ -64,6 +64,8 @@ export class LndService {
         return await this.createInvoice();
       }
 
+      // TEST
+
       if (invoice) {
         return {
           id: invoice.id,
