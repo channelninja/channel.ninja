@@ -1,0 +1,20 @@
+.git
+.gitignore
+.cache
+*.md
+!README*.md
+/node_modules
+/build
+src/client/build
+/dist
+/docs
+/.github
+.vscode
+CHANGELOG.md
+
+# all env files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
