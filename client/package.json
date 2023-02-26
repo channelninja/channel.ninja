@@ -3,23 +3,6 @@
   "version": "1.0.0",
   "private": true,
   "proxy": "http://localhost:3001",
-  "dependencies": {
-    "@reduxjs/toolkit": "^1.9.2",
-    "classnames": "^2.3.2",
-    "formik": "^2.2.9",
-    "lightning": "^7.0.7",
-    "qrcode.react": "^3.1.0",
-    "react": "^18.2.0",
-    "react-aria": "^3.22.0",
-    "react-dom": "^18.2.0",
-    "react-query": "^3.39.3",
-    "react-redux": "^8.0.5",
-    "react-stately": "^3.20.0",
-    "socket.io-client": "^4.6.0",
-    "throttle-debounce": "^5.0.0",
-    "typescript": "^4.9.5",
-    "yup": "^1.0.0"
-  },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
@@ -44,21 +27,5 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "devDependencies": {
-    "@testing-library/jest-dom": "^5.16.5",
-    "@testing-library/react": "^14.0.0",
-    "@testing-library/user-event": "^14.4.3",
-    "@types/jest": "^29.4.0",
-    "@types/node": "^18.14.0",
-    "@types/react": "^18.0.28",
-    "@types/react-dom": "^18.0.11",
-    "@types/throttle-debounce": "^5.0.0",
-    "@webbtc/webln-types": "^1.0.10",
-    "openapi-typescript-codegen": "^0.23.0",
-    "prettier": "^2.8.4",
-    "prettier-plugin-tailwindcss": "^0.2.3",
-    "react-scripts": "5.0.1",
-    "tailwindcss": "^3.2.6"
   }
 }

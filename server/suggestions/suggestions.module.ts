@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { GraphModule } from 'src/graph/graph.module';
+import { GraphModule } from '../graph/graph.module';
 import { SuggestionsController } from './suggestions.controller';
 import { SuggestionsService } from './suggestions.service';
 

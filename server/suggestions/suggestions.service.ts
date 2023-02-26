@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { NodeResponseDto } from 'src/graph/dtos/node-response.dto';
-import { MAX_CHANNELS, MIN_AVG_CHANNEL_SIZE, MIN_CHANNELS, MIN_DISTANCE, TWO_WEEKS } from 'src/graph/graph.constants';
-import { GraphService } from 'src/graph/graph.service';
+import { NodeResponseDto } from '../graph/dtos/node-response.dto';
+import { MAX_CHANNELS, MIN_AVG_CHANNEL_SIZE, MIN_CHANNELS, MIN_DISTANCE, TWO_WEEKS } from '../graph/graph.constants';
+import { GraphService } from '../graph/graph.service';
 
 @Injectable()
 export class SuggestionsService {

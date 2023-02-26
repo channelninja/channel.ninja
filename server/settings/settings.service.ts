@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DEFAULT_FEE } from 'src/fees/default-fee.constant';
 import { In, Repository } from 'typeorm';
+import { DEFAULT_FEE } from '../fees/default-fee.constant';
 import { FeeSettingsDto } from './dto/fee-settings.dto';
 import { FeeUnit } from './dto/fee-unit.dto';
 import { GetSettingsResponseDto } from './dto/get-settings-response.dto';

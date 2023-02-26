@@ -1,11 +1,6 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import {
-  InitResponseDto,
-  LndInvoiceResponseDto,
-  NodeInfoDto,
-  NodeResponseDto,
-} from "../generated";
-import { RootState } from "./store";
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { InitResponseDto, LndInvoiceResponseDto, NodeInfoDto, NodeResponseDto } from '../generated';
+import { RootState } from './store';
 
 export interface GlobalState {
   isSocketConnected?: boolean;
@@ -25,15 +20,10 @@ const initialState: GlobalState = {
 };
 
 export const globalSlice = createSlice({
-  name: "global",
+  name: 'global',
   initialState,
   reducers: {
-    initApp: (
-      state,
-      action: PayloadAction<
-        InitResponseDto & { availableWebLNMethods: string[] }
-      >
-    ) => {
+    initApp: (state, action: PayloadAction<InitResponseDto & { availableWebLNMethods: string[] }>) => {
       state.isMaintenanceMode = action.payload.maintenance;
       state.fee = action.payload.fee;
     },
@@ -73,12 +63,10 @@ export const {
 
 export default globalSlice.reducer;
 
-export const selectIsSocketConnected = (state: RootState) =>
-  state.global.isSocketConnected;
+export const selectIsSocketConnected = (state: RootState) => state.global.isSocketConnected;
 export const selectPubKey = (state: RootState) => state.global.pubKey;
 export const selectInvoice = (state: RootState) => state.global.invoice;
 export const selectInvoicePaid = (state: RootState) => state.global.invoicePaid;
 export const selectNodes = (state: RootState) => state.global.nodes;
 export const selectFee = (state: RootState) => state.global.fee;
-export const selectIsMaintenanceMode = (state: RootState) =>
-  state.global.isMaintenanceMode;
+export const selectIsMaintenanceMode = (state: RootState) => state.global.isMaintenanceMode;

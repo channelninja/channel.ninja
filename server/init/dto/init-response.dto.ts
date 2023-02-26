@@ -1,4 +1,4 @@
-import { IsBoolean, IsNumber } from 'class-validator';
+import { IsBoolean, IsNumber, IsString } from 'class-validator';
 
 export class InitResponseDto {
   @IsNumber()
@@ -6,4 +6,7 @@ export class InitResponseDto {
 
   @IsBoolean()
   public maintenance: boolean;
+
+  @IsString()
+  public apiUrl: string;
 }

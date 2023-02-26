@@ -1,6 +1,6 @@
 import { Controller, Get, Param } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
-import { NodeResponseDto } from 'src/graph/dtos/node-response.dto';
+import { NodeResponseDto } from '../graph/dtos/node-response.dto';
 import { SuggestionsService } from './suggestions.service';
 
 @ApiTags('suggestions')

@@ -15,8 +15,7 @@ $ yarn
 ## Environment variables
 
 ```bash
-$ cp server/.env.example server/.env
-$ cp client/.env.example client/.env
+$ cp .env.example .env
 ```
 
 Create a macaroon with the necessary permissions:
