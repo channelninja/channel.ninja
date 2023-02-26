@@ -5,5 +5,6 @@
 export type InitResponseDto = {
     fee: number;
     maintenance: boolean;
+    apiUrl: string;
 };
 

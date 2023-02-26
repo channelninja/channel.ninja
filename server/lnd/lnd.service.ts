@@ -11,7 +11,7 @@ import {
   subscribeToInvoice,
   SubscribeToInvoiceInvoiceUpdatedEvent,
 } from 'lightning';
-import { FeesService } from 'src/fees/fees.service';
+import { FeesService } from '../fees/fees.service';
 import { LndInvoiceResponseDto } from './dto/lnd-invoice-response.dto';
 import { LndGateway } from './lnd.gateway';
 

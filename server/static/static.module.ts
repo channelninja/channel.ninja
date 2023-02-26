@@ -11,7 +11,7 @@ export class StaticModule {
       process.env.NODE_ENV === 'production'
         ? [
             ServeStaticModule.forRoot({
-              rootPath: join(__dirname, '..', '..', '..', 'client', 'build'),
+              rootPath: join(__dirname, '..', '..', 'client', 'build'),
               exclude: ['/api*'],
             }),
           ]

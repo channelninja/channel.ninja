@@ -1,8 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
 import { InjectRepository } from '@nestjs/typeorm';
-import { LndService } from 'src/lnd/lnd.service';
 import { Repository } from 'typeorm';
+import { LndService } from '../lnd/lnd.service';
 import { EdgeResponseDto } from './dtos/edge-response.dto';
 import { NodeResponseDto } from './dtos/node-response.dto';
 import { Channel } from './entities/channel.entity';

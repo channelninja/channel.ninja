@@ -1,7 +1,7 @@
-import { Controller, Post } from '@nestjs/common';
+import { Controller, InternalServerErrorException, Post } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { FeesService } from 'src/fees/fees.service';
-import { SettingsService } from 'src/settings/settings.service';
+import { FeesService } from '../fees/fees.service';
+import { SettingsService } from '../settings/settings.service';
 import { InitResponseDto } from './dto/init-response.dto';
 
 @ApiTags('init')
@@ -14,6 +14,10 @@ export class InitController {
     const fee = await this.feesService.getFee();
     const maintenance = await this.settingsService.isMaintenanceMode();
 
-    return { fee, maintenance };
+    if (!process.env.API_URL) {
+      throw new InternalServerErrorException('API_URL not defined');
+    }
+
+    return { fee, maintenance, apiUrl: process.env.API_URL };
   }
 }

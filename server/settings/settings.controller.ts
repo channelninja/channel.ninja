@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
 import { ApiBasicAuth, ApiTags } from '@nestjs/swagger';
-import { BasicGuard } from 'src/auth/basic.guard';
+import { BasicGuard } from '../auth/basic.guard';
 import { FeeAmountDto } from './dto/fee-amount.dto';
 import { FeeUnitDto } from './dto/fee-unit.dto';
 import { GetSettingsResponseDto } from './dto/get-settings-response.dto';

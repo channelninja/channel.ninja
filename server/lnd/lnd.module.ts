@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { FeesModule } from 'src/fees/fees.module';
+import { FeesModule } from '../fees/fees.module';
 import { LndController } from './lnd.controller';
 import { LndGateway } from './lnd.gateway';
 import { LndService } from './lnd.service';

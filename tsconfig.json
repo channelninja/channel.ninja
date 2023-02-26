@@ -20,5 +20,6 @@
     "strict": true,
     "resolveJsonModule": true,
     "esModuleInterop": true,
-  }
+  },
+    "include": ["server"]
 }
