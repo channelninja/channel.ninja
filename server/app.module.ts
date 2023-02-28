@@ -20,12 +20,15 @@ import { SuggestionsModule } from './suggestions/suggestions.module';
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => {
-        const database = configService.get('DB_PATH');
-
         return {
-          type: 'better-sqlite3',
+          host: configService.get('DB_HOST'),
+          port: configService.get('DB_PORT'),
+          username: configService.get('DB_USER'),
+          password: configService.get('DB_PASSWORD'),
+          database: configService.get('DB_DATABASE'),
+          ssl: process.env.NODE_ENV === 'production',
+          type: 'postgres',
           autoLoadEntities: true,
-          database,
           synchronize: false,
           migrationsRun: true,
           migrations,

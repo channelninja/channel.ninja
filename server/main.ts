@@ -1,16 +1,16 @@
 import { NestFactory } from '@nestjs/core';
-import sqlite from 'better-sqlite3';
 import session from 'express-session';
 import { AppModule } from './app.module';
 
 import { ValidationPipe } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { RedocModule, RedocOptions } from '@nicholas.braun/nestjs-redoc';
-import betterSqlite3SessionStore from 'better-sqlite3-session-store';
-const SqliteStore = betterSqlite3SessionStore(session);
+import connectPgSimple from 'connect-pg-simple';
+import expressSession from 'express-session';
 
-const db = new sqlite(process.env.DB_PATH);
+const pgSession = connectPgSimple(expressSession);
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
@@ -31,13 +31,20 @@ async function bootstrap() {
 
   app.set('trust proxy', 1); // trust first proxy
 
+  const configService = app.get<ConfigService>(ConfigService);
+
   app.use(
     session({
-      store: new SqliteStore({
-        client: db,
-        expired: {
-          clear: true,
-          intervalMs: 900000, //ms = 15min
+      store: new pgSession({
+        tableName: 'user_sessions', // Use another table-name than the default "session" one
+        createTableIfMissing: true,
+        conObject: {
+          host: configService.get('DB_HOST'),
+          port: configService.get('DB_PORT'),
+          user: configService.get('DB_USER'),
+          password: configService.get('DB_PASSWORD'),
+          database: configService.get('DB_DATABASE'),
+          ssl: process.env.NODE_ENV === 'production',
         },
       }),
       cookie: {
