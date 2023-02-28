@@ -7,9 +7,20 @@ config();
 
 const configService = new ConfigService();
 
+const dbHost = configService.get('DB_HOST');
+const dbPort = configService.get('DB_PORT');
+const dbUser = configService.get('DB_USER');
+const dbPassword = configService.get('DB_PASSWORD');
+const dbDatabase = configService.get('DB_DATABASE');
+
 export default new DataSource({
-  type: 'better-sqlite3',
-  database: configService.get('DB_PATH'),
+  host: dbHost,
+  port: dbPort,
+  username: dbUser,
+  password: dbPassword,
+  database: dbDatabase,
+  ssl: process.env.NODE_ENV === 'production',
+  type: 'postgres',
   synchronize: false,
   migrationsRun: true,
   migrationsTransactionMode: 'all',

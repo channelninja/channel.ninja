@@ -1,4 +1,3 @@
-import { InitialMigration1674841064388 } from './1674841064388-initial-migration';
-import { addGraphTables1675447335476 } from './1675447335476-add-graph-tables';
+import { initialMigration1677615582158 } from './1677615582158-initial-migration';
 
-export const migrations = [InitialMigration1674841064388, addGraphTables1675447335476];
+export const migrations = [initialMigration1677615582158];
