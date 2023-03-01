@@ -43,8 +43,8 @@ export class GraphService {
     this.updateGraphInMemory();
   }
 
-  // every 10 minutes
-  @Cron('*/10 * * * *')
+  // every 4 hours
+  @Cron('0 */4 * * *')
   public async updateGraph(force?: boolean): Promise<void> {
     console.log('updateGraph');
 
