@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Install doctl
         uses: digitalocean/action-doctl@v2
@@ -20,8 +20,8 @@ jobs:
         shell: bash
         run: |
           doctl registry login --expiry-seconds 600
-          docker build . -t registry.digitalocean.com/${{ secrets.REGISTRY }}/${{ vars.IMAGE }}:${{ github.ref_name }}
-          docker push registry.digitalocean.com/${{ secrets.REGISTRY }}/${{ vars.IMAGE }}:${{ github.ref_name }}
+          docker build . -t registry.digitalocean.com/${{ secrets.REGISTRY }}/${{ secrets.IMAGE }}:${{ github.ref_name }}
+          docker push registry.digitalocean.com/${{ secrets.REGISTRY }}/${{ secrets.IMAGE }}:${{ github.ref_name }}
 
       - name: DigitalOcean App Platform deployment
         uses: digitalocean/app_action@main
@@ -29,8 +29,8 @@ jobs:
           app_name: ${{ secrets.APP_NAME }}
           token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
           images: '[{
-            "name": "${{ vars.IMAGE }}",
-            "repository": "registry.digitalocean.com/${{ secrets.REGISTRY }}/${{ vars.IMAGE }}",
+            "name": "${{ secrets.COMPONENT_NAME }}",
+            "repository": "registry.digitalocean.com/${{ secrets.REGISTRY }}/${{ secrets.IMAGE }}",
             "tag": "${{ github.ref_name }}"
             }
             ]'
