@@ -26,7 +26,12 @@ import { SuggestionsModule } from './suggestions/suggestions.module';
           username: configService.get('DB_USER'),
           password: configService.get('DB_PASSWORD'),
           database: configService.get('DB_DATABASE'),
-          ssl: process.env.NODE_ENV === 'production',
+          ssl:
+            process.env.NODE_ENV === 'production'
+              ? {
+                  ca: process.env.SSL_CERT,
+                }
+              : false,
           type: 'postgres',
           autoLoadEntities: true,
           synchronize: false,
