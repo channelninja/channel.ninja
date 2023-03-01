@@ -1,16 +1,12 @@
-import { QRCodeSVG } from "qrcode.react";
-import { useCallback, useEffect, useMemo, useState } from "react";
-import {
-  invoicePaid,
-  selectFee,
-  selectIsMaintenanceMode,
-} from "../../redux/global-slice";
-import { useAppDispatch, useAppSelector } from "../../redux/hooks";
-import { CHANNEL_NINJA_PUB_KEY } from "../../utils/global-constants";
-import { useTimeoutTooltip } from "./hooks/use-timeout-tooltip";
-import { NinjaText } from "./ninja-text.enum";
-import { selectNinjaText } from "./ninja-text.selector";
-import { TooltipKey } from "./tooltip.enum";
+import { QRCodeSVG } from 'qrcode.react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { invoicePaid, selectFee, selectIsMaintenanceMode } from '../../redux/global-slice';
+import { useAppDispatch, useAppSelector } from '../../redux/hooks';
+import { CHANNEL_NINJA_PUB_KEY } from '../../utils/global-constants';
+import { useTimeoutTooltip } from './hooks/use-timeout-tooltip';
+import { NinjaText } from './ninja-text.enum';
+import { selectNinjaText } from './ninja-text.selector';
+import { TooltipKey } from './tooltip.enum';
 
 const SpeechBubble = () => {
   const ninjaTextKey = useAppSelector(selectNinjaText);
@@ -31,7 +27,7 @@ const SpeechBubble = () => {
             await window.webln.enable();
             await window.webln.sendPayment(invoice.request);
           } catch (error) {
-            console.error("Failed to use webln to send payment", error);
+            console.error('Failed to use webln to send payment', error);
             setUseWebLN(false);
           }
         }
@@ -42,11 +38,11 @@ const SpeechBubble = () => {
   }, [invoice?.request, nodeCount]);
 
   const handleQRCodeClick = useCallback(async () => {
-    await navigator.clipboard.writeText(invoice?.request || "");
+    await navigator.clipboard.writeText(invoice?.request || '');
 
     setTooltip(TooltipKey.QR_CODE_CLICKED);
 
-    if (process.env.NODE_ENV !== "production") {
+    if (process.env.NODE_ENV !== 'production') {
       setTimeout(() => dispatch(invoicePaid()), 5000);
     }
   }, [dispatch, invoice, setTooltip]);
@@ -72,21 +68,11 @@ const SpeechBubble = () => {
       case TooltipKey.QR_CODE_CLICKED:
         return <p>Invoice copied!</p>;
       case TooltipKey.CONNECTIONS_HOVERED:
-        return (
-          <p>
-            Number of channels this node has to other suggested nodes in this
-            list.
-          </p>
-        );
+        return <p>Number of channels this node has to other suggested nodes in this list.</p>;
       case TooltipKey.ADDRESS_CLICKED:
         return <p>Address copied to clipboard.</p>;
       case TooltipKey.GRAPH_NOT_READY:
-        return (
-          <p>
-            I'm updating my network graph at the moment. Please try again in a
-            few minutes
-          </p>
-        );
+        return <p>I'm updating my network graph at the moment. Please try again in a few minutes</p>;
       case TooltipKey.CHANNEL_OPENED:
         return <p>Channel opened successfully</p>;
       case TooltipKey.CHANNEL_OPENED_FAIL:
@@ -101,11 +87,7 @@ const SpeechBubble = () => {
       case NinjaText.CONNECTING:
         return <p>connecting...</p>;
       case NinjaText.CONNECTED:
-        return (
-          <p>
-            Enter your ⚡️ node's pubkey to find recommended channel partners.
-          </p>
-        );
+        return <p>Enter your ⚡️ node's pubkey to find recommended channel partners.</p>;
       case NinjaText.QR_CODE:
         return (
           <p>
@@ -127,43 +109,27 @@ const SpeechBubble = () => {
       case NinjaText.RECOMMENDATION_LIST:
         return (
           <p>
-            This is a opinionated list of nodes that might be good candidates to
-            open channels to.
+            This is a opinionated list of nodes that might be good candidates to open channels to.
             <br />
             <br />
-            They have a moderate amount of channels, but not too much so that
-            the decentralized nature of the network stays intact.
+            They have a moderate amount of channels, but not too much so that the decentralized nature of the network
+            stays intact.
             <br />
-            <br />I update my internal ⚡️ network graph every 10 minutes.
+            <br />I update my internal ⚡️ network graph every 4 hours.
           </p>
         );
       case NinjaText.NO_NODES_FOUND:
         return <p>No nodes found. Try again later.</p>;
       case NinjaText.OPEN_CHANNEL:
-        return (
-          <p>
-            Set the desired channel capacity and the fee of the funding
-            transaction to open a channel.
-          </p>
-        );
+        return <p>Set the desired channel capacity and the fee of the funding transaction to open a channel.</p>;
       default:
-        return (
-          <p>
-            Enter your ⚡️ node's pubkey to find recommended channel partners.
-          </p>
-        );
+        return <p>Enter your ⚡️ node's pubkey to find recommended channel partners.</p>;
     }
   }, [ninjaTextKey, nodeCount, invoice, useWebLN, handleQRCodeClick, fee]);
 
-  const maintenance = isMaintenanceMode ? (
-    <p>I'm doing some maintenance. Try again later</p>
-  ) : undefined;
+  const maintenance = isMaintenanceMode ? <p>I'm doing some maintenance. Try again later</p> : undefined;
 
-  return (
-    <div className="ninja__speech-bubble">
-      {maintenance || tooltip || ninjaText}
-    </div>
-  );
+  return <div className="ninja__speech-bubble">{maintenance || tooltip || ninjaText}</div>;
 };
 
 export default SpeechBubble;
