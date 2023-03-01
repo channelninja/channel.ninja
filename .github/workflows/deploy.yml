@@ -1,0 +1,36 @@
+name: deploy
+
+on:
+  push:
+    tags:
+      - '**'
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install doctl
+        uses: digitalocean/action-doctl@v2
+        with:
+          token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+
+      - name: Publish Image to Digital Ocean Container Registry
+        shell: bash
+        run: |
+          doctl registry login --expiry-seconds 600
+          docker build . -t registry.digitalocean.com/${{ secrets.REGISTRY }}/${{ vars.IMAGE }}:${{ github.ref_name }}
+          docker push registry.digitalocean.com/${{ secrets.REGISTRY }}/${{ vars.IMAGE }}:${{ github.ref_name }}
+
+      - name: DigitalOcean App Platform deployment
+        uses: digitalocean/app_action@main
+        with:
+          app_name: ${{ secrets.APP_NAME }}
+          token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+          images: '[{
+            "name": "${{ vars.IMAGE }}",
+            "repository": "registry.digitalocean.com/${{ secrets.REGISTRY }}/${{ vars.IMAGE }}",
+            "tag": "${{ github.ref_name }}"
+            }
+            ]'
