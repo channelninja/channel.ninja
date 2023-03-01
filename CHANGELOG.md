@@ -1,5 +1,22 @@
 # Changelog
 
+## [1.1.0](https://github.com/channelninja/channel.ninja/compare/v1.0.0...v1.1.0) (2023-03-01)
+
+
+### Features
+
+* **database:** replaced sqlite with postgres ([71ef43b](https://github.com/channelninja/channel.ninja/commit/71ef43b8e1d2eb4952378b561ba3ad1bf78c58f8))
+
+
+### Bug Fixes
+
+* **database:** use ssl certificate for production ([d6b2523](https://github.com/channelninja/channel.ninja/commit/d6b2523a9715090e93ddc80114f5ef013f15b171))
+
+
+### Performance Improvements
+
+* only fetch new graph every 4 hours ([5a4fc16](https://github.com/channelninja/channel.ninja/commit/5a4fc1640419b270a3ff150f3f6b1ffd403f54a7))
+
 ## 1.0.0 (2023-02-18)
 
 
