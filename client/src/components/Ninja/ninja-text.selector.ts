@@ -33,7 +33,7 @@ export const selectNinjaText = createSelector(
       return NinjaText.NO_NODES_FOUND;
     }
 
-    if (pubKey && !invoice) {
+    if (pubKey && !nodes) {
       return NinjaText.LOADING;
     }
 
