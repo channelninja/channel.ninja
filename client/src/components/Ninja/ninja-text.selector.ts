@@ -1,13 +1,13 @@
-import { createSelector } from "@reduxjs/toolkit";
-import { selectIsOpenChannelDialogOpen } from "../../features/WebLN/web-ln-slice";
+import { createSelector } from '@reduxjs/toolkit';
+import { selectIsOpenChannelDialogOpen } from '../../features/WebLN/web-ln-slice';
 import {
   selectInvoice,
   selectInvoicePaid,
   selectIsSocketConnected,
   selectNodes,
   selectPubKey,
-} from "../../redux/global-slice";
-import { NinjaText } from "./ninja-text.enum";
+} from '../../redux/global-slice';
+import { NinjaText } from './ninja-text.enum';
 
 export const selectNinjaText = createSelector(
   selectIsSocketConnected,
@@ -16,14 +16,7 @@ export const selectNinjaText = createSelector(
   selectInvoicePaid,
   selectNodes,
   selectIsOpenChannelDialogOpen,
-  (
-    isSocketConnected,
-    pubKey,
-    invoice,
-    invoicePaid,
-    nodes,
-    isOpenChannelDialogOpen
-  ) => {
+  (isSocketConnected, pubKey, invoice, invoicePaid, nodes, isOpenChannelDialogOpen) => {
     if (!isSocketConnected) {
       return NinjaText.CONNECTING;
     }
@@ -32,7 +25,7 @@ export const selectNinjaText = createSelector(
       return NinjaText.OPEN_CHANNEL;
     }
 
-    if (!invoice && !invoicePaid) {
+    if (!pubKey && !nodes && !invoice && !invoicePaid) {
       return NinjaText.CONNECTED;
     }
 
@@ -40,12 +33,16 @@ export const selectNinjaText = createSelector(
       return NinjaText.NO_NODES_FOUND;
     }
 
-    if (pubKey && invoice && !invoicePaid) {
+    if (pubKey && !invoice) {
+      return NinjaText.LOADING;
+    }
+
+    if (pubKey && nodes && invoice && !invoicePaid) {
       return NinjaText.QR_CODE;
     }
 
     if (invoicePaid) {
       return NinjaText.RECOMMENDATION_LIST;
     }
-  }
+  },
 );

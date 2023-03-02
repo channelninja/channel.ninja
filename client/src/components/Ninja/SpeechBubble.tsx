@@ -88,6 +88,8 @@ const SpeechBubble = () => {
         return <p>connecting...</p>;
       case NinjaText.CONNECTED:
         return <p>Enter your ⚡️ node's pubkey to find recommended channel partners.</p>;
+      case NinjaText.LOADING:
+        return <p>Loading suggestions...</p>;
       case NinjaText.QR_CODE:
         return (
           <p>
