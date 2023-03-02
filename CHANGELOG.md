@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.1](https://github.com/channelninja/channel.ninja/compare/v1.1.0...v1.1.1) (2023-03-02)
+
+
+### Bug Fixes
+
+* add loading text while fetching suggestions ([3f1673d](https://github.com/channelninja/channel.ninja/commit/3f1673df39d52dc200b90a607bc2f162b238aff5))
+
 ## [1.1.0](https://github.com/channelninja/channel.ninja/compare/v1.0.0...v1.1.0) (2023-03-01)
 
 
