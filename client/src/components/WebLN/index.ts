@@ -1,1 +1,1 @@
-export { default } from "./GetPubKeyFromExtensionButton";
+export { default } from './GetPubKeyFromExtensionButton';

@@ -1,11 +1,11 @@
-import { useState } from "react";
-import { useAppDispatch } from "../../redux/hooks";
-import { CHANNEL_NINJA_PUB_KEY } from "../../utils/global-constants";
-import { useTimeoutTooltip } from "./hooks/use-timeout-tooltip";
-import "./ninja.css";
-import SpeechBubble from "./SpeechBubble";
-import { ninjaMouseEntered, resetTooltip } from "./tooltip-slice";
-import { TooltipKey } from "./tooltip.enum";
+import { useState } from 'react';
+import { useAppDispatch } from '../../redux/hooks';
+import { CHANNEL_NINJA_PUB_KEY } from '../../utils/global-constants';
+import { useTimeoutTooltip } from './hooks/use-timeout-tooltip';
+import './ninja.css';
+import SpeechBubble from './SpeechBubble';
+import { ninjaMouseEntered, resetTooltip } from './tooltip-slice';
+import { TooltipKey } from './tooltip.enum';
 
 const Ninja = () => {
   const dispatch = useAppDispatch();

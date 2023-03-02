@@ -1,7 +1,7 @@
-import { configureStore } from "@reduxjs/toolkit";
-import tooltipSlice from "../components/Ninja/tooltip-slice";
-import webLNSlice from "../features/WebLN/web-ln-slice";
-import globalSlice from "./global-slice";
+import { configureStore } from '@reduxjs/toolkit';
+import tooltipSlice from '../components/Ninja/tooltip-slice';
+import webLNSlice from '../features/WebLN/web-ln-slice';
+import globalSlice from './global-slice';
 
 export const store = configureStore({
   reducer: {

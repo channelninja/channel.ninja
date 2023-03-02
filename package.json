@@ -17,7 +17,9 @@
     "migration:run": "node --require ts-node/register ./node_modules/typeorm/cli.js migration:run -d server/core/database/data-source.prod.ts",
     "migration:revert": "node --require ts-node/register ./node_modules/typeorm/cli.js migration:revert -d server/core/database/data-source.prod.ts",
     "prebuild": "rimraf dist",
-    "commit": "cz"
+    "commit": "cz",
+    "format": "prettier --write \"{server,client}/**/*.{ts,tsx,css}\"",
+    "prepare": "husky install"
   },
   "author": "",
   "license": "MIT",
@@ -98,6 +100,7 @@
     "eslint-plugin-prettier": "^4.0.0",
     "husky": "^8.0.3",
     "jest": "29.4.3",
+    "lint-staged": ">=10",
     "openapi-typescript-codegen": "^0.23.0",
     "prettier": "^2.8.4",
     "prettier-plugin-tailwindcss": "^0.2.3",
@@ -118,5 +121,10 @@
     "commitizen": {
       "path": "./node_modules/cz-conventional-changelog"
     }
+  },
+  "lint-staged": {
+    "*.+(ts|tsx)": [
+      "prettier --write"
+    ]
   }
 }

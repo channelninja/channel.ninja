@@ -1,14 +1,14 @@
-import { useState } from "react";
+import { useState } from 'react';
 
 // Hook
 export function useLocalStorage<T>(
   key: string,
-  initialValue: T | undefined
+  initialValue: T | undefined,
 ): [T | undefined, (value: T | undefined) => void, () => void] {
   // State to store our value
   // Pass initial state function to useState so logic is only executed once
   const [storedValue, setStoredValue] = useState<T | undefined>(() => {
-    if (typeof window === "undefined") {
+    if (typeof window === 'undefined') {
       return initialValue;
     }
     try {
@@ -27,12 +27,11 @@ export function useLocalStorage<T>(
   const setValue = (value: T | undefined) => {
     try {
       // Allow value to be a function so we have same API as useState
-      const valueToStore =
-        value instanceof Function ? value(storedValue) : value;
+      const valueToStore = value instanceof Function ? value(storedValue) : value;
       // Save state
       setStoredValue(valueToStore);
       // Save to local storage
-      if (typeof window !== "undefined") {
+      if (typeof window !== 'undefined') {
         window.localStorage.setItem(key, JSON.stringify(valueToStore));
       }
     } catch (error) {
@@ -44,7 +43,7 @@ export function useLocalStorage<T>(
   const removeValue = () => {
     setStoredValue(undefined);
 
-    if (typeof window !== "undefined") {
+    if (typeof window !== 'undefined') {
       window.localStorage.removeItem(key);
     }
   };

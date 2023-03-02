@@ -1,7 +1,7 @@
-import { useCallback } from "react";
-import { useAppDispatch } from "../../../redux/hooks";
-import { resetTooltip, tooltipChanged } from "../tooltip-slice";
-import { TooltipKey } from "../tooltip.enum";
+import { useCallback } from 'react';
+import { useAppDispatch } from '../../../redux/hooks';
+import { resetTooltip, tooltipChanged } from '../tooltip-slice';
+import { TooltipKey } from '../tooltip.enum';
 
 let timeoutId: NodeJS.Timeout | undefined;
 
@@ -18,7 +18,7 @@ export const useTimeoutTooltip = () => {
 
       timeoutId = setTimeout(() => dispatch(resetTooltip()), timeout);
     },
-    [dispatch]
+    [dispatch],
   );
 
   return setTooltip;

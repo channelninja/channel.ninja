@@ -13,7 +13,7 @@
 
 html {
   font-size: 62.5%;
-  font-family: "Courier New", Courier, monospace;
+  font-family: 'Courier New', Courier, monospace;
   color: #fff;
   height: var(--document-height);
 }

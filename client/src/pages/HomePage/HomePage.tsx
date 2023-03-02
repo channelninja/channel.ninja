@@ -1,33 +1,33 @@
-import { useCallback, useEffect, useRef } from "react";
-import Dialog from "../../components/Dialog/Dialog";
-import Form from "../../components/Form";
-import ListItem from "../../components/ListItem";
-import Ninja from "../../components/Ninja";
-import { useTimeoutTooltip } from "../../components/Ninja/hooks/use-timeout-tooltip";
-import { TooltipKey } from "../../components/Ninja/tooltip.enum";
-import Node from "../../components/Node";
-import NodeInfo from "../../components/NodeInfo";
-import Social from "../../components/Social";
-import { useSockets } from "../../context/useSocket";
-import OpenChannelForm from "../../features/WebLN/components/OpenChannelForm";
-import { openChannelTargetNodeChanged } from "../../features/WebLN/web-ln-slice";
-import { LndService, SuggestionsService } from "../../generated";
+import { useCallback, useEffect, useRef } from 'react';
+import Dialog from '../../components/Dialog/Dialog';
+import Form from '../../components/Form';
+import ListItem from '../../components/ListItem';
+import Ninja from '../../components/Ninja';
+import { useTimeoutTooltip } from '../../components/Ninja/hooks/use-timeout-tooltip';
+import { TooltipKey } from '../../components/Ninja/tooltip.enum';
+import Node from '../../components/Node';
+import NodeInfo from '../../components/NodeInfo';
+import Social from '../../components/Social';
+import { useSockets } from '../../context/useSocket';
+import OpenChannelForm from '../../features/WebLN/components/OpenChannelForm';
+import { openChannelTargetNodeChanged } from '../../features/WebLN/web-ln-slice';
+import { LndService, SuggestionsService } from '../../generated';
 import {
   invoiceFetched,
   invoicePaid,
   nodeInfoChanged,
   nodesFetched,
   validPubKeyEntered,
-} from "../../redux/global-slice";
-import { useAppDispatch, useAppSelector } from "../../redux/hooks";
-import "./home.css";
+} from '../../redux/global-slice';
+import { useAppDispatch, useAppSelector } from '../../redux/hooks';
+import './home.css';
 
 export enum TooltipState {
-  INIT = "INIT",
-  VALID_PUB_KEY_ENTERED = "VALID_PUB_KEY_ENTERED",
-  INVALID_PUB_KEY_ENTERED = "INVALID_PUB_KEY_ENTERED",
-  NINJA_HOVERED = "NINJA_HOVERED",
-  NINJA_CLICKED = "NINJA_CLICKED",
+  INIT = 'INIT',
+  VALID_PUB_KEY_ENTERED = 'VALID_PUB_KEY_ENTERED',
+  INVALID_PUB_KEY_ENTERED = 'INVALID_PUB_KEY_ENTERED',
+  NINJA_HOVERED = 'NINJA_HOVERED',
+  NINJA_CLICKED = 'NINJA_CLICKED',
 }
 
 const HomePage = () => {
@@ -36,12 +36,10 @@ const HomePage = () => {
   const dispatch = useAppDispatch();
   const intervalRef = useRef<NodeJS.Timer>();
   const setTooltip = useTimeoutTooltip();
-  const openChannelTargetNode = useAppSelector(
-    (state) => state.webLN.openChannelTargetNode
-  );
+  const openChannelTargetNode = useAppSelector((state) => state.webLN.openChannelTargetNode);
 
   useEffect(() => {
-    socket?.on("lnd:invoice-confirmed", (id) => {
+    socket?.on('lnd:invoice-confirmed', (id) => {
       if (id === state.invoice?.id) {
         dispatch(invoicePaid());
       }
@@ -49,14 +47,14 @@ const HomePage = () => {
 
     if (state.invoice && !state.invoicePaid) {
       intervalRef.current = setInterval(() => {
-        socket?.emit("lnd:check-invoice-status", { id: state.invoice?.id });
+        socket?.emit('lnd:check-invoice-status', { id: state.invoice?.id });
       }, 1000);
     } else {
       clearInterval(intervalRef.current);
     }
 
     return () => {
-      socket?.off("lnd:invoice-confirmed");
+      socket?.off('lnd:invoice-confirmed');
     };
   }, [state.invoice, dispatch, socket, state.invoicePaid]);
 
@@ -98,7 +96,7 @@ const HomePage = () => {
 
       dispatch(nodesFetched(nodes));
     },
-    [dispatch]
+    [dispatch],
   );
 
   const handleFormSubmit = useCallback(
@@ -126,7 +124,7 @@ const HomePage = () => {
         setTooltip(TooltipKey.GRAPH_NOT_READY, 10000);
       }
     },
-    [dispatch, setTooltip, fetchSuggestions]
+    [dispatch, setTooltip, fetchSuggestions],
   );
 
   const handleDialogCloseClick = () => {
@@ -161,12 +159,15 @@ const HomePage = () => {
           <div className="overflow-y-auto">
             {state.nodeInfo && !state.invoicePaid && state.pubKey && (
               <div className="home__node-info">
-                <NodeInfo nodeInfo={state.nodeInfo} pubKey={state.pubKey} />
+                <NodeInfo
+                  nodeInfo={state.nodeInfo}
+                  pubKey={state.pubKey}
+                />
               </div>
             )}
 
             {!openChannelTargetNode && state.invoicePaid && state.nodes && (
-              <ul style={{ width: "100%" }}>
+              <ul style={{ width: '100%' }}>
                 {state.nodes.map((node) => (
                   <ListItem key={node.id}>
                     <Node node={node} />

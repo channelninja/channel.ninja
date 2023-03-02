@@ -1,1 +1,1 @@
-export { default } from "./Ninja";
+export { default } from './Ninja';

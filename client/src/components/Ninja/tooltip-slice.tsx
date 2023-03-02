@@ -1,5 +1,5 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { TooltipKey } from "./tooltip.enum";
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { TooltipKey } from './tooltip.enum';
 
 export type TooltipState = {
   key: TooltipKey | undefined;
@@ -12,7 +12,7 @@ const initialState: TooltipState = {
 };
 
 export const tooltipSlice = createSlice({
-  name: "tooltip",
+  name: 'tooltip',
   initialState,
   reducers: {
     tooltipChanged: (state, action: PayloadAction<TooltipKey>) => {
@@ -31,11 +31,6 @@ export const tooltipSlice = createSlice({
 });
 
 // Action creators are generated for each case reducer function
-export const {
-  ninjaMouseEntered,
-  resetTooltip,
-  connectionsMouseEntered,
-  tooltipChanged,
-} = tooltipSlice.actions;
+export const { ninjaMouseEntered, resetTooltip, connectionsMouseEntered, tooltipChanged } = tooltipSlice.actions;
 
 export default tooltipSlice.reducer;

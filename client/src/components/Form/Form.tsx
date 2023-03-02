@@ -1,15 +1,11 @@
-import { useEffect, useState } from "react";
-import { selectIsMaintenanceMode } from "../../redux/global-slice";
-import { useAppSelector } from "../../redux/hooks";
-import GetPubKeyFromExtensionButton from "../WebLN";
-import "./form.css";
+import { useEffect, useState } from 'react';
+import { selectIsMaintenanceMode } from '../../redux/global-slice';
+import { useAppSelector } from '../../redux/hooks';
+import GetPubKeyFromExtensionButton from '../WebLN';
+import './form.css';
 
-const Form = ({
-  onSubmit,
-}: {
-  onSubmit: ({ pubKey }: { pubKey: string }) => void;
-}) => {
-  const [pubKey, setPubKey] = useState("");
+const Form = ({ onSubmit }: { onSubmit: ({ pubKey }: { pubKey: string }) => void }) => {
+  const [pubKey, setPubKey] = useState('');
   const isMaintenanceMode = useAppSelector(selectIsMaintenanceMode);
 
   useEffect(() => {
@@ -25,7 +21,10 @@ const Form = ({
   return (
     <div className="form">
       <form className="form__form">
-        <label htmlFor="pubKey" className="form__label">
+        <label
+          htmlFor="pubKey"
+          className="form__label"
+        >
           pubkey
         </label>
 

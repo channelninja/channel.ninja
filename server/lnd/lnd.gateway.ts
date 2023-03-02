@@ -1,10 +1,5 @@
 import { forwardRef, Inject } from '@nestjs/common';
-import {
-  MessageBody,
-  SubscribeMessage,
-  WebSocketGateway,
-  WebSocketServer,
-} from '@nestjs/websockets';
+import { MessageBody, SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
 import { Server } from 'socket.io';
 import { LndService } from './lnd.service';
 
@@ -15,9 +10,7 @@ import { LndService } from './lnd.service';
   },
 })
 export class LndGateway {
-  constructor(
-    @Inject(forwardRef(() => LndService)) private lndService: LndService,
-  ) {}
+  constructor(@Inject(forwardRef(() => LndService)) private lndService: LndService) {}
 
   @WebSocketServer() server: Server;
 
@@ -26,9 +19,7 @@ export class LndGateway {
   }
 
   @SubscribeMessage('lnd:check-invoice-status')
-  public async handleCheckInvoiceStatus(
-    @MessageBody() data: { id: string },
-  ): Promise<void> {
+  public async handleCheckInvoiceStatus(@MessageBody() data: { id: string }): Promise<void> {
     await this.lndService.checkInvoiceStatus(data.id);
   }
 }

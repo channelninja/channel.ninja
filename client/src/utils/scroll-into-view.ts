@@ -1,7 +1,4 @@
-export function scrollIntoView(
-  targetId: string,
-  { offset }: { offset: number }
-) {
+export function scrollIntoView(targetId: string, { offset }: { offset: number }) {
   const element = document.getElementById(targetId);
   if (!element) {
     return;
@@ -11,6 +8,6 @@ export function scrollIntoView(
 
   window.scrollTo({
     top: offsetPosition,
-    behavior: "smooth",
+    behavior: 'smooth',
   });
 }

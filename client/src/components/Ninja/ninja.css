@@ -10,14 +10,14 @@
 
 .ninja__speech-bubble {
   background-color: #fff;
-    position: absolute;
-    bottom: 13rem;
-    left: 0;
-    width: 30rem;
-    color: #000;
-    padding: 2rem;
-    border-radius: 1.4rem;
-    word-break: break-word;
+  position: absolute;
+  bottom: 13rem;
+  left: 0;
+  width: 30rem;
+  color: #000;
+  padding: 2rem;
+  border-radius: 1.4rem;
+  word-break: break-word;
 }
 
 .ninja__speech-bubble::after {

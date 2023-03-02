@@ -1,4 +1,4 @@
-import "./info.css";
+import './info.css';
 
 const Info = ({
   onMouseEnter,

@@ -16,5 +16,5 @@
 }
 
 .node-info__definition-term::after {
-  content: ':'
+  content: ':';
 }

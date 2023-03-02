@@ -1,4 +1,4 @@
-import "./social.css";
+import './social.css';
 
 const Social = () => {
   return (

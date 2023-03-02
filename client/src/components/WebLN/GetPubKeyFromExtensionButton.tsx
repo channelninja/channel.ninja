@@ -1,13 +1,11 @@
-import React from "react";
-import "./webln.css";
+import React from 'react';
+import './webln.css';
 
 type GetPubKeyFromExtensionButtonProps = {
   setPubKey(pubKey: string): void;
 };
 
-function GetPubKeyFromExtensionButton({
-  setPubKey,
-}: GetPubKeyFromExtensionButtonProps) {
+function GetPubKeyFromExtensionButton({ setPubKey }: GetPubKeyFromExtensionButtonProps) {
   const handleClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
 
@@ -21,25 +19,26 @@ function GetPubKeyFromExtensionButton({
           if (info.node.pubkey) {
             setPubKey(info.node.pubkey);
           } else {
-            alert("Your current account does not have a public key");
+            alert('Your current account does not have a public key');
           }
         } catch (error) {
-          console.error("Failed to get node info", error);
-          alert("Failed to request node info");
+          console.error('Failed to get node info', error);
+          alert('Failed to request node info');
         }
       } catch (error) {
-        console.error("Failed to enable webln", error);
+        console.error('Failed to enable webln', error);
         alert((error as Error).message);
       }
     } else {
-      alert(
-        "You don't have a Lightning extension yet. Try Alby at https://getalby.com/"
-      );
+      alert("You don't have a Lightning extension yet. Try Alby at https://getalby.com/");
     }
   };
 
   return (
-    <button className="webln__button" onClick={handleClick}>
+    <button
+      className="webln__button"
+      onClick={handleClick}
+    >
       Get from extension
     </button>
   );
