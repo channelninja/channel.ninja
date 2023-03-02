@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.2](https://github.com/channelninja/channel.ninja/compare/v1.1.1...v1.1.2) (2023-03-02)
+
+
+### Bug Fixes
+
+* dont show loading when nodes are shown ([cbd6b9f](https://github.com/channelninja/channel.ninja/commit/cbd6b9fe767e67bbb43d3ace9337ecc4acc57a4e))
+
 ## [1.1.1](https://github.com/channelninja/channel.ninja/compare/v1.1.0...v1.1.1) (2023-03-02)
 
 
