@@ -10,7 +10,7 @@
     "build:nest": "nest build",
     "build:cra": "cd client && react-scripts build",
     "build": "yarn build:nest && yarn build:cra",
-    "start:dev": "concurrently -n client,server -c magenta,cyan \"npm run start:client\" \"npm run start:server\"",
+    "start:dev": "NODE_ENV=development concurrently -n client,server -c magenta,cyan \"npm run start:client\" \"npm run start:server\"",
     "start:prod": "NODE_ENV=production node dist/main.js",
     "migration:create": "node --require ts-node/register ./node_modules/typeorm/cli.js migration:create",
     "migration:generate": "node --require ts-node/register ./node_modules/typeorm/cli.js migration:generate -d server/core/database/data-source.prod.ts",

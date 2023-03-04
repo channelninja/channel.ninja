@@ -9,6 +9,10 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { RedocModule, RedocOptions } from '@nicholas.braun/nestjs-redoc';
 import connectPgSimple from 'connect-pg-simple';
 import expressSession from 'express-session';
+import { ChannelNinjaConfig } from './core/config/configuration/channel-ninja.config';
+import { Configuration } from './core/config/configuration/configuration.enum';
+import { DatabaseConfig } from './core/config/configuration/database.config';
+import { Environment } from './core/config/environment.enum';
 
 const pgSession = connectPgSimple(expressSession);
 
@@ -32,6 +36,16 @@ async function bootstrap() {
   app.set('trust proxy', 1); // trust first proxy
 
   const configService = app.get<ConfigService>(ConfigService);
+  const {
+    database,
+    host,
+    password,
+    port,
+    ca,
+    username: user,
+  } = configService.get<DatabaseConfig>(Configuration.database);
+  const NODE_ENV = configService.get<Environment>('NODE_ENV');
+  const { sessionSecret } = configService.get<ChannelNinjaConfig>(Configuration.channelNinja);
 
   app.use(
     session({
@@ -39,17 +53,12 @@ async function bootstrap() {
         tableName: 'user_sessions', // Use another table-name than the default "session" one
         createTableIfMissing: true,
         conObject: {
-          host: configService.get('DB_HOST'),
-          port: configService.get('DB_PORT'),
-          user: configService.get('DB_USER'),
-          password: configService.get('DB_PASSWORD'),
-          database: configService.get('DB_DATABASE'),
-          ssl:
-            process.env.NODE_ENV === 'production'
-              ? {
-                  ca: process.env.SSL_CERT,
-                }
-              : false,
+          host,
+          port,
+          user,
+          password,
+          database,
+          ssl: NODE_ENV === Environment.Production ? { ca } : false,
         },
       }),
       cookie: {
@@ -58,7 +67,7 @@ async function bootstrap() {
         httpOnly: true,
       },
       name: 'sessionId',
-      secret: process.env.SESSION_SECRET,
+      secret: sessionSecret,
       resave: false,
       saveUninitialized: true,
     }),

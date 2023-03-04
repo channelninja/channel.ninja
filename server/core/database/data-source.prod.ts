@@ -2,24 +2,23 @@ import { ConfigService } from '@nestjs/config';
 import { config } from 'dotenv';
 import { DataSource } from 'typeorm';
 import { migrations } from '../../migrations';
+import { Configuration } from '../config/configuration/configuration.enum';
+import { DatabaseConfig } from '../config/configuration/database.config';
+import { Environment } from '../config/environment.enum';
 
 config();
 
 const configService = new ConfigService();
-
-const dbHost = configService.get('DB_HOST');
-const dbPort = configService.get('DB_PORT');
-const dbUser = configService.get('DB_USER');
-const dbPassword = configService.get('DB_PASSWORD');
-const dbDatabase = configService.get('DB_DATABASE');
+const { database, host, password, port, ca, username } = configService.get<DatabaseConfig>(Configuration.database);
+const NODE_ENV = configService.get<Environment>('NODE_ENV');
 
 export default new DataSource({
-  host: dbHost,
-  port: dbPort,
-  username: dbUser,
-  password: dbPassword,
-  database: dbDatabase,
-  ssl: process.env.NODE_ENV === 'production',
+  host,
+  port,
+  username,
+  password,
+  database,
+  ssl: NODE_ENV === Environment.Production ? { ca } : false,
   type: 'postgres',
   synchronize: false,
   migrationsRun: true,

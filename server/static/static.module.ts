@@ -1,14 +1,13 @@
 import { DynamicModule, Module } from '@nestjs/common';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
+import { Environment } from 'server/core/config/environment.enum';
 
 @Module({})
 export class StaticModule {
   static forRoot(): DynamicModule {
-    console.log(process.env.NODE_ENV);
-
     const imports =
-      process.env.NODE_ENV === 'production'
+      process.env.NODE_ENV === Environment.Production
         ? [
             ServeStaticModule.forRoot({
               rootPath: join(__dirname, '..', '..', 'client', 'build'),

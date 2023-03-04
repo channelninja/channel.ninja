@@ -1,4 +1,5 @@
 import { forwardRef, Inject, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import {
   AuthenticatedLnd,
   authenticatedLndGrpc,
@@ -11,6 +12,8 @@ import {
   subscribeToInvoice,
   SubscribeToInvoiceInvoiceUpdatedEvent,
 } from 'lightning';
+import { Configuration } from 'server/core/config/configuration/configuration.enum';
+import { LndNodeConfig } from 'server/core/config/configuration/lnd-node.config';
 import { FeesService } from '../fees/fees.service';
 import { LndInvoiceResponseDto } from './dto/lnd-invoice-response.dto';
 import { LndGateway } from './lnd.gateway';
@@ -19,12 +22,14 @@ import { LndGateway } from './lnd.gateway';
 export class LndService {
   private lnd: AuthenticatedLnd;
 
-  constructor(private feesService: FeesService, @Inject(forwardRef(() => LndGateway)) private lndGateWay: LndGateway) {
-    const { lnd } = authenticatedLndGrpc({
-      cert: process.env.CERT ?? '',
-      macaroon: process.env.MACAROON,
-      socket: process.env.SOCKET,
-    });
+  constructor(
+    private feesService: FeesService,
+    @Inject(forwardRef(() => LndGateway)) private lndGateWay: LndGateway,
+    private configService: ConfigService,
+  ) {
+    const { macaroon, socket, cert } = this.configService.get<LndNodeConfig>(Configuration.lndNode);
+
+    const { lnd } = authenticatedLndGrpc({ cert, macaroon, socket });
 
     this.lnd = lnd;
   }
@@ -79,7 +84,7 @@ export class LndService {
   public async createInvoice(): Promise<LndInvoiceResponseDto> {
     const fees = await this.feesService.getFee();
     const expires_at = new Date(Date.now() + 1000 * 60 * 60 * 1).toISOString();
-    const tokens = process.env.NODE_ENV === 'production' ? fees : 1;
+    const tokens = fees;
 
     const createdInvoice = await createInvoice({
       lnd: this.lnd,
@@ -90,10 +95,6 @@ export class LndService {
     const sub = subscribeToInvoice({ id: createdInvoice.id, lnd: this.lnd });
 
     sub.addListener('invoice_updated', async (invoice: SubscribeToInvoiceInvoiceUpdatedEvent) => {
-      if (process.env.NODE_ENV !== 'production') {
-        console.log('invoice_updated', invoice);
-      }
-
       if (invoice.is_confirmed) {
         this.lndGateWay.invoiceConfirmed(invoice.id);
       }

@@ -1,13 +1,16 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { Cron } from '@nestjs/schedule';
 import { InjectRepository } from '@nestjs/typeorm';
+import { ChannelNinjaConfig } from 'server/core/config/configuration/channel-ninja.config';
+import { Configuration } from 'server/core/config/configuration/configuration.enum';
+import { SuggestionsConfig } from 'server/core/config/configuration/suggestions.config';
 import { Repository } from 'typeorm';
 import { LndService } from '../lnd/lnd.service';
 import { EdgeResponseDto } from './dtos/edge-response.dto';
 import { NodeResponseDto } from './dtos/node-response.dto';
 import { Channel } from './entities/channel.entity';
 import { Node } from './entities/node.entity';
-import { TWO_WEEKS } from './graph.constants';
 
 type NodeT = {
   pubKey: string;
@@ -31,11 +34,13 @@ export class GraphService {
     private lndService: LndService,
     @InjectRepository(Channel) private channelRepository: Repository<Channel>,
     @InjectRepository(Node) private nodeRepository: Repository<Node>,
+    private configService: ConfigService,
   ) {
     this.nodesMap = new Map();
+    const { forceFetchGraph } = configService.get<ChannelNinjaConfig>(Configuration.channelNinja);
 
     this.nodeRepository.count().then((count) => {
-      if (count === 0 || process.env.FORCE_FETCH_GRAPH === 'true') {
+      if (count === 0 || forceFetchGraph) {
         this.updateGraph(true);
       }
     });
@@ -48,7 +53,7 @@ export class GraphService {
   public async updateGraph(force?: boolean): Promise<void> {
     console.log('updateGraph');
 
-    if (process.env.NODE_ENV !== 'production' && !force) {
+    if (!force) {
       return;
     }
 
@@ -98,6 +103,7 @@ export class GraphService {
   }
 
   public async updateGraphInDB(): Promise<void> {
+    const { maxLastUpdatedDurationMS } = this.configService.get<SuggestionsConfig>(Configuration.suggestions);
     const graphData = await this.lndService.fetchNetworkGraph();
 
     try {
@@ -109,7 +115,11 @@ export class GraphService {
 
     console.time('updateGraphInDB');
     for (const node of graphData.nodes) {
-      if (!node.updated_at || !node.alias || Date.now() - new Date(node.updated_at).valueOf() >= TWO_WEEKS) {
+      if (
+        !node.updated_at ||
+        !node.alias ||
+        Date.now() - new Date(node.updated_at).valueOf() >= maxLastUpdatedDurationMS
+      ) {
         continue;
       }
 
@@ -123,7 +133,7 @@ export class GraphService {
     }
 
     for (const channel of graphData.channels) {
-      if (!channel.updated_at || Date.now() - new Date(channel.updated_at).valueOf() >= TWO_WEEKS) {
+      if (!channel.updated_at || Date.now() - new Date(channel.updated_at).valueOf() >= maxLastUpdatedDurationMS) {
         continue;
       }
 
