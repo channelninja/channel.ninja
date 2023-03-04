@@ -1,32 +1,35 @@
 import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { Configuration } from 'server/core/config/configuration/configuration.enum';
+import { SuggestionsConfig } from 'server/core/config/configuration/suggestions.config';
 import { NodeResponseDto } from '../graph/dtos/node-response.dto';
-import { MAX_CHANNELS, MIN_AVG_CHANNEL_SIZE, MIN_CHANNELS, MIN_DISTANCE, TWO_WEEKS } from '../graph/graph.constants';
 import { GraphService } from '../graph/graph.service';
 
 @Injectable()
 export class SuggestionsService {
-  constructor(private graphService: GraphService) {}
+  constructor(private graphService: GraphService, private configService: ConfigService) {}
 
   public async getSuggestions(start: string): Promise<NodeResponseDto[]> {
     const nodes = this.graphService.getNodes({ start });
+    const { maxChannels, minAvgChannelSize, minChannels, minDistance, maxLastUpdatedDurationMS } =
+      this.configService.get<SuggestionsConfig>(Configuration.suggestions);
 
     const filteredNodes = nodes.filter((node) => {
-      if (node.channelCount < MIN_CHANNELS || node.channelCount > MAX_CHANNELS) {
+      if (node.channelCount < minChannels || node.channelCount > maxChannels) {
         return false;
       }
 
-      if (node.distance < MIN_DISTANCE) {
+      if (node.distance < minDistance) {
         return false;
       }
 
-      const lastUpdateInLessThatTwoWeeks =
-        process.env.NODE_ENV !== 'production' ? true : Date.now() - node.lastUpdate <= TWO_WEEKS;
+      const lastUpdateIsValidDuration = Date.now() - node.lastUpdate <= maxLastUpdatedDurationMS;
 
-      if (!lastUpdateInLessThatTwoWeeks) {
+      if (!lastUpdateIsValidDuration) {
         return false;
       }
 
-      if (node.avgChannelSize < MIN_AVG_CHANNEL_SIZE) {
+      if (node.avgChannelSize < minAvgChannelSize) {
         return false;
       }
 
