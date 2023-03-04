@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.3](https://github.com/channelninja/channel.ninja/compare/v1.1.2...v1.1.3) (2023-03-04)
+
+
+### Bug Fixes
+
+* **suggestions:** use env vars instead of constants for suggestion criteria ([59cad32](https://github.com/channelninja/channel.ninja/commit/59cad3233a50b7cfd318da219a383ae9b7826aa7))
+
 ## [1.1.2](https://github.com/channelninja/channel.ninja/compare/v1.1.1...v1.1.2) (2023-03-02)
 
 
