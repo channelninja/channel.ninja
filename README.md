@@ -31,9 +31,9 @@ info:read \
 $ base64 -i ~/.lnd/data/chain/bitcoin/mainnet/channel-ninja.macaroon
 ```
 
-Add your base64 encoded `channel-ninja.macaroon` to `server/.env`.
+Add your base64 encoded `channel-ninja.macaroon` to `.env`.
 
-Change the rest of the `.env` files according to your needs.
+Change the rest of the `.env` file according to your needs.
 
 ## Running the app
 
