@@ -1,4 +1,3 @@
-import { Buffer } from 'buffer';
 import { useFormik } from 'formik';
 import { useState } from 'react';
 import { useQuery } from 'react-query';
@@ -11,7 +10,7 @@ import { FeesService, NodeResponseDto } from '../../../generated';
 import { channelOpened } from '../../../redux/global-slice';
 import { useAppDispatch } from '../../../redux/hooks';
 import { openChannelTargetNodeChanged } from '../web-ln-slice';
-import { swapEndianness } from './utils/swap-endianness';
+import { getTransactionId } from './utils/get-transaction-id';
 
 type ChannelOpenParams = {
   capacity: number;
@@ -56,9 +55,7 @@ const OpenChannelForm = ({ node }: { node: NodeResponseDto }) => {
         })) as { funding_txid_bytes?: string };
 
         if (res.funding_txid_bytes) {
-          const buffer = Buffer.from(res.funding_txid_bytes, 'base64');
-          const hex = buffer.toString('hex');
-          const transactionId = swapEndianness(hex);
+          const transactionId = getTransactionId(res.funding_txid_bytes);
 
           dispatch(channelOpened({ transactionId, pubKey: node.id }));
         }
