@@ -39,6 +39,7 @@
     "@nestjs/websockets": "^9.3.9",
     "@nicholas.braun/nestjs-redoc": "^2.2.3",
     "@reduxjs/toolkit": "^1.9.3",
+    "buffer": "^6.0.3",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.0",
     "classnames": "^2.3.2",

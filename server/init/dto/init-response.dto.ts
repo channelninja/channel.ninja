@@ -9,4 +9,7 @@ export class InitResponseDto {
 
   @IsString()
   public apiUrl: string;
+
+  @IsString()
+  public txExplorerUrl: string;
 }

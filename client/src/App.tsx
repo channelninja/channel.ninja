@@ -39,9 +39,13 @@ function App() {
 
       if (window.webln) {
         await window.webln.enable();
-        const info = await window.webln.getInfo();
+        try {
+          const info = await window.webln.getInfo();
 
-        availableWebLNMethods = info.methods;
+          availableWebLNMethods = info.methods;
+        } catch (error) {
+          console.log(error);
+        }
       }
 
       setApiUrl(initialSettings.apiUrl);

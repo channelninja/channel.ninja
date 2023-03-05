@@ -3,8 +3,8 @@
 /* eslint-disable */
 
 export type InitResponseDto = {
-    fee: number;
-    maintenance: boolean;
-    apiUrl: string;
+  fee: number;
+  maintenance: boolean;
+  apiUrl: string;
+  txExplorerUrl: string;
 };
-

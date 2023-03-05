@@ -1,3 +1,4 @@
+import { Buffer } from 'buffer';
 import { useFormik } from 'formik';
 import { useState } from 'react';
 import { useQuery } from 'react-query';
@@ -7,8 +8,10 @@ import { useTimeoutTooltip } from '../../../components/Ninja/hooks/use-timeout-t
 import { TooltipKey } from '../../../components/Ninja/tooltip.enum';
 import { NumberInput } from '../../../components/NumberInput/NumberInput';
 import { FeesService, NodeResponseDto } from '../../../generated';
+import { channelOpened } from '../../../redux/global-slice';
 import { useAppDispatch } from '../../../redux/hooks';
 import { openChannelTargetNodeChanged } from '../web-ln-slice';
+import { swapEndianness } from './utils/swap-endianness';
 
 type ChannelOpenParams = {
   capacity: number;
@@ -42,7 +45,7 @@ const OpenChannelForm = ({ node }: { node: NodeResponseDto }) => {
       }
 
       try {
-        await window.webln.request('openchannel', {
+        const res = (await window.webln.request('openchannel', {
           node_pubkey_string: node.id,
           local_funding_amount: values.capacity,
           sat_per_vbyte: values.fee,
@@ -50,7 +53,15 @@ const OpenChannelForm = ({ node }: { node: NodeResponseDto }) => {
           // base_fee: values.baseFee,
           // use_base_fee: true,
           // use_fee_rate: true,
-        });
+        })) as { funding_txid_bytes?: string };
+
+        if (res.funding_txid_bytes) {
+          const buffer = Buffer.from(res.funding_txid_bytes, 'base64');
+          const hex = buffer.toString('hex');
+          const transactionId = swapEndianness(hex);
+
+          dispatch(channelOpened({ transactionId, pubKey: node.id }));
+        }
 
         setTooltip(TooltipKey.CHANNEL_OPENED);
         dispatch(openChannelTargetNodeChanged(undefined));

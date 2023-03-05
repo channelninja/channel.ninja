@@ -5,6 +5,7 @@ export type ChannelNinjaConfig = {
   sessionSecret: string;
   coinApiKey: string;
   apiUrl: string;
+  txExplorerUrl: string;
 };
 
 const channelNinjaConfig = (): ChannelNinjaConfig => ({
@@ -14,6 +15,7 @@ const channelNinjaConfig = (): ChannelNinjaConfig => ({
   sessionSecret: process.env.SESSION_SECRET,
   coinApiKey: process.env.COIN_API_KEY,
   apiUrl: process.env.API_URL,
+  txExplorerUrl: process.env.TX_EXPLORER_URL || 'https://mempool.space/tx',
 });
 
 export default channelNinjaConfig;

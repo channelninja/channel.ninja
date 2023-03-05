@@ -20,8 +20,8 @@ export class InitController {
   public async init(): Promise<InitResponseDto> {
     const fee = await this.feesService.getFee();
     const maintenance = await this.settingsService.isMaintenanceMode();
-    const { apiUrl } = this.configService.get<ChannelNinjaConfig>(Configuration.channelNinja);
+    const { apiUrl, txExplorerUrl } = this.configService.get<ChannelNinjaConfig>(Configuration.channelNinja);
 
-    return { fee, maintenance, apiUrl };
+    return { fee, maintenance, apiUrl, txExplorerUrl };
   }
 }

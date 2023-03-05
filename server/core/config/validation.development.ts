@@ -68,4 +68,8 @@ export class DevelopmentEnvironmentVariables {
   @IsOptional()
   @IsNumber()
   MAX_LAST_UPDATED_DURATION_MS: number;
+
+  @IsOptional()
+  @IsString()
+  TX_EXPLORER_URL: string;
 }

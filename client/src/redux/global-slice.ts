@@ -11,12 +11,15 @@ export interface GlobalState {
   nodeInfo?: NodeInfoDto;
   fee?: number;
   isMaintenanceMode: boolean;
+  transactionIdsByPubkey: { [pubkey: string]: string };
+  txExplorerUrl?: string;
 }
 
 const initialState: GlobalState = {
   isSocketConnected: false,
   invoicePaid: false,
   isMaintenanceMode: false,
+  transactionIdsByPubkey: {},
 };
 
 export const globalSlice = createSlice({
@@ -26,6 +29,7 @@ export const globalSlice = createSlice({
     initApp: (state, action: PayloadAction<InitResponseDto & { availableWebLNMethods: string[] }>) => {
       state.isMaintenanceMode = action.payload.maintenance;
       state.fee = action.payload.fee;
+      state.txExplorerUrl = action.payload.txExplorerUrl;
     },
     socketChanged: (state, action: PayloadAction<boolean>) => {
       state.isSocketConnected = action.payload;
@@ -47,6 +51,12 @@ export const globalSlice = createSlice({
       state.invoicePaid = false;
       state.pubKey = action.payload;
     },
+    channelOpened: (state, action: PayloadAction<{ transactionId: string; pubKey: string }>) => {
+      state.transactionIdsByPubkey = {
+        ...state.transactionIdsByPubkey,
+        [action.payload.pubKey]: action.payload.transactionId,
+      };
+    },
   },
 });
 
@@ -59,6 +69,7 @@ export const {
   invoicePaid,
   nodeInfoChanged,
   validPubKeyEntered,
+  channelOpened,
 } = globalSlice.actions;
 
 export default globalSlice.reducer;

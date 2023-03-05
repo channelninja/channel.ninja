@@ -10,6 +10,10 @@ import Socket from './Socket';
 const Node = ({ node }: { node: NodeResponseDto }) => {
   const dispatch = useAppDispatch();
   const isOpenChannelAvailable = useAppSelector(selectIsOpenChannelAvailable);
+  const transactionIdsByPubkey = useAppSelector((state) => state.global.transactionIdsByPubkey);
+  const txExplorerUrl = useAppSelector((state) => state.global.txExplorerUrl);
+
+  const transactionId = transactionIdsByPubkey[node.id];
 
   const handleConnectionsMouseEnter = () => {
     dispatch(connectionsMouseEntered());
@@ -109,30 +113,43 @@ const Node = ({ node }: { node: NodeResponseDto }) => {
         </div>
       </div>
 
-      <div className="node__sockets-container">
-        <ul className="node__sockets-list">
-          {node.sockets.map((socket, i) => (
-            <li
-              key={i}
-              className="node__sockets-list-item"
-            >
-              <Socket
-                socket={socket}
-                pubkey={node.id}
-              />
-            </li>
-          ))}
+      {transactionId && txExplorerUrl ? (
+        <div>
+          <a
+            className="underline underline-offset-2 hover:no-underline"
+            href={`${txExplorerUrl}/${transactionId}`}
+            target="_blank"
+            rel="noreferrer"
+          >
+            Funding Transaction
+          </a>
+        </div>
+      ) : (
+        <div>
+          <ul className="node__sockets-list">
+            {node.sockets.map((socket, i) => (
+              <li
+                key={i}
+                className="node__sockets-list-item"
+              >
+                <Socket
+                  socket={socket}
+                  pubkey={node.id}
+                />
+              </li>
+            ))}
 
-          {window?.webln && node.sockets.length && isOpenChannelAvailable ? (
-            <li
-              key={node.sockets.length}
-              className="node__sockets-list-item"
-            >
-              <Button onPress={handleOpenChannelClick}>open channel</Button>
-            </li>
-          ) : null}
-        </ul>
-      </div>
+            {window?.webln && node.sockets.length && isOpenChannelAvailable ? (
+              <li
+                key={node.sockets.length}
+                className="node__sockets-list-item"
+              >
+                <Button onPress={handleOpenChannelClick}>open channel</Button>
+              </li>
+            ) : null}
+          </ul>
+        </div>
+      )}
     </div>
   );
 };
