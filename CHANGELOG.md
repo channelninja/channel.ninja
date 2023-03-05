@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.0](https://github.com/channelninja/channel.ninja/compare/v1.1.3...v1.2.0) (2023-03-05)
+
+
+### Features
+
+* **web-ln:** add link to funding tx after opening a channel via WebLN ([022f885](https://github.com/channelninja/channel.ninja/commit/022f885b8688298a773c9d141456bcec3a9b552a))
+
 ## [1.1.3](https://github.com/channelninja/channel.ninja/compare/v1.1.2...v1.1.3) (2023-03-04)
 
 
