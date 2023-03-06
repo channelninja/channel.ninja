@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.1](https://github.com/channelninja/channel.ninja/compare/v1.2.0...v1.2.1) (2023-03-06)
+
+
+### Bug Fixes
+
+* remove log ([279a3d3](https://github.com/channelninja/channel.ninja/commit/279a3d3b1b1483c8c6252cabafc090d56742814c))
+
 ## [1.2.0](https://github.com/channelninja/channel.ninja/compare/v1.1.3...v1.2.0) (2023-03-05)
 
 
