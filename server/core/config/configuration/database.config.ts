@@ -8,8 +8,6 @@ export type DatabaseConfig = {
 };
 
 const databaseConfig = (): DatabaseConfig => {
-  console.log('process.env.DB_PASSWORD', process.env.DB_PASSWORD);
-
   return {
     host: process.env.DB_HOST,
     port: parseInt(process.env.DB_PORT, 10) || 5432,
