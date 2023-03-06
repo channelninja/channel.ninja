@@ -11,6 +11,8 @@ import { EdgeResponseDto } from './dtos/edge-response.dto';
 import { NodeResponseDto } from './dtos/node-response.dto';
 import { Channel } from './entities/channel.entity';
 import { Node } from './entities/node.entity';
+import { UpdateChannel } from './types/update-channel.type';
+import { UpdateNode } from './types/update-node.type';
 
 type NodeT = {
   pubKey: string;
@@ -37,32 +39,42 @@ export class GraphService {
     private configService: ConfigService,
   ) {
     this.nodesMap = new Map();
-    const { forceFetchGraph } = configService.get<ChannelNinjaConfig>(Configuration.channelNinja);
 
-    this.nodeRepository.count().then((count) => {
-      if (count === 0 || forceFetchGraph) {
-        this.updateGraph(true);
-      }
-    });
-
-    this.updateGraphInMemory();
+    this.init();
   }
 
-  // every 4 hours
-  @Cron('0 */4 * * *')
-  public async updateGraph(force?: boolean): Promise<void> {
-    console.log('updateGraph');
+  public async init(): Promise<void> {
+    const { forceFetchGraph } = this.configService.get<ChannelNinjaConfig>(Configuration.channelNinja);
+    const nodeCountInDB = await this.nodeRepository.count();
 
-    if (!force) {
-      return;
+    if (nodeCountInDB === 0 || forceFetchGraph) {
+      await this.updateGraphInDB();
     }
 
-    await this.updateGraphInDB();
     await this.updateGraphInMemory();
+    this.subscribeToGraph();
   }
 
+  public subscribeToGraph(): void {
+    const eventEmitter = this.lndService.subscribeToGraph();
+
+    eventEmitter.addListener('channel_updated', async (values: UpdateChannel) => {
+      await this.updatedChannel(values);
+    });
+
+    eventEmitter.addListener('channel_closed', async (values: { id: string }) => {
+      await this.closedChannel(values);
+    });
+
+    eventEmitter.addListener('node_updated', async (values: UpdateNode) => {
+      await this.updatedNode(values);
+    });
+  }
+
+  @Cron('*/1 * * * *')
   public async updateGraphInMemory(): Promise<void> {
-    console.time('updateGraphInMemory');
+    console.log('updateGraphInMemory');
+    const start = Date.now();
 
     const nodes = await this.nodeRepository.find();
     const channels = await this.channelRepository.find();
@@ -99,10 +111,14 @@ export class GraphService {
       node2.peers.add(node1);
     });
 
-    console.timeEnd('updateGraphInMemory');
+    const end = Date.now();
+    console.log(`updatedGraphInMemory in ${end - start}ms`);
   }
 
   public async updateGraphInDB(): Promise<void> {
+    console.log('updateGraphInDB');
+    const start = Date.now();
+
     const { maxLastUpdatedDurationMS } = this.configService.get<SuggestionsConfig>(Configuration.suggestions);
     const graphData = await this.lndService.fetchNetworkGraph();
 
@@ -113,7 +129,6 @@ export class GraphService {
       console.log(error);
     }
 
-    console.time('updateGraphInDB');
     for (const node of graphData.nodes) {
       if (
         !node.updated_at ||
@@ -146,7 +161,9 @@ export class GraphService {
         updated_at: new Date(channel.updated_at),
       });
     }
-    console.timeEnd('updateGraphInDB');
+
+    const end = Date.now();
+    console.log(`updatedGraphInDB in ${end - start}ms`);
   }
 
   public getNodes({ start }: { start: string }): NodeResponseDto[] {
@@ -231,5 +248,60 @@ export class GraphService {
     }
 
     return response;
+  }
+
+  public async updatedChannel({ id, capacity, public_keys, transaction_id, updated_at }: UpdateChannel): Promise<void> {
+    try {
+      await this.channelRepository.save({
+        id,
+        capacity,
+        source_public_key: public_keys[0],
+        target_public_key: public_keys[1],
+        transaction_id,
+        updated_at: updated_at ? new Date(updated_at) : new Date(),
+      });
+    } catch (error) {
+      console.error('Could not update channel', error);
+      return;
+    }
+
+    for (const public_key of public_keys) {
+      try {
+        const { alias, updated_at, color, sockets, features } = await this.lndService.getNodeInfo(public_key);
+
+        await this.updatedNode({
+          alias,
+          updated_at,
+          color,
+          public_key,
+          sockets: sockets.map((socket) => socket.socket),
+          features,
+        });
+      } catch (error) {
+        console.log(`Could not find node: ${public_key}`);
+      }
+    }
+  }
+
+  public async closedChannel({ id }: { id: string }): Promise<void> {
+    try {
+      await this.channelRepository.delete(id);
+    } catch (error) {
+      console.error('Could not delete channel', error);
+    }
+  }
+
+  public async updatedNode({ public_key, updated_at, alias, sockets, color }: UpdateNode): Promise<void> {
+    try {
+      await this.nodeRepository.save({
+        public_key,
+        alias,
+        color,
+        sockets: JSON.stringify(sockets),
+        updated_at: updated_at ? new Date(updated_at) : new Date(),
+      });
+    } catch (error) {
+      console.error('Could not update node', error);
+    }
   }
 }

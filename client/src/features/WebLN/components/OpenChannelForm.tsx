@@ -34,6 +34,7 @@ const OpenChannelForm = ({ node }: { node: NodeResponseDto }) => {
         await window.webln.request('connectpeer', { addr: { pubkey: node.id, host: node.sockets[0] } });
       } catch (error) {
         const err = error as Error;
+        console.error(error);
 
         if (!err.message.includes('already connected to peer')) {
           setError(err.message);

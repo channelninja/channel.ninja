@@ -1,5 +1,6 @@
 import { forwardRef, Inject, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import EventEmitter from 'events';
 import {
   AuthenticatedLnd,
   authenticatedLndGrpc,
@@ -9,6 +10,7 @@ import {
   GetNetworkGraphResult,
   getNode,
   GetNodeResult,
+  subscribeToGraph,
   subscribeToInvoice,
   SubscribeToInvoiceInvoiceUpdatedEvent,
 } from 'lightning';
@@ -34,6 +36,10 @@ export class LndService {
     this.lnd = lnd;
   }
 
+  public subscribeToGraph(): EventEmitter {
+    return subscribeToGraph({ lnd: this.lnd });
+  }
+
   public async getNodeInfo(pubkey: string): Promise<GetNodeResult> {
     try {
       return await getNode({
@@ -47,16 +53,18 @@ export class LndService {
   }
 
   public async fetchNetworkGraph(): Promise<GetNetworkGraphResult> {
-    try {
-      console.time('fetchNetworkGraph');
+    console.log('fetchNetworkGraph');
+    const start = Date.now();
 
+    try {
       const graphData = await getNetworkGraph({ lnd: this.lnd });
 
-      console.timeEnd('fetchNetworkGraph');
+      const end = Date.now();
+      console.log(`fetchedNetworkGraph in ${end - start}ms`);
 
       return graphData;
     } catch (error) {
-      console.log(error);
+      console.log('fetchNetworkGraph', error);
       throw new InternalServerErrorException('Could not fetch network graph');
     }
   }

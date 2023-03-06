@@ -116,8 +116,6 @@ const SpeechBubble = () => {
             <br />
             They have a moderate amount of channels, but not too much so that the decentralized nature of the network
             stays intact.
-            <br />
-            <br />I update my internal ⚡️ network graph every 4 hours.
           </p>
         );
       case NinjaText.NO_NODES_FOUND:
