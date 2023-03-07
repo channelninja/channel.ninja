@@ -89,7 +89,7 @@ const Node = ({ node }: { node: NodeResponseDto }) => {
         </div>
 
         <div className="node__meta">
-          <div className="node__meta-title">max channel size</div>
+          <div className="node__meta-title">largest channel</div>
           <div className="node__meta-data">
             <span className="node__meta-data--bold">{node.maxChannelSize?.toLocaleString('en-US') || '-'}</span>
             sats
@@ -97,7 +97,7 @@ const Node = ({ node }: { node: NodeResponseDto }) => {
         </div>
 
         <div className="node__meta">
-          <div className="node__meta-title">min channel size</div>
+          <div className="node__meta-title">smallest channel</div>
           <div className="node__meta-data">
             <span className="node__meta-data--bold">{node.minChannelSize?.toLocaleString('en-US') || '-'}</span>
             sats
@@ -105,7 +105,7 @@ const Node = ({ node }: { node: NodeResponseDto }) => {
         </div>
 
         <div className="node__meta">
-          <div className="node__meta-title">avg channel size</div>
+          <div className="node__meta-title">avg channel</div>
           <div className="node__meta-data">
             <span className="node__meta-data--bold">{node.avgChannelSize?.toLocaleString('en-US') || '-'}</span>
             sats
