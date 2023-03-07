@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.3.0](https://github.com/channelninja/channel.ninja/compare/v1.2.1...v1.3.0) (2023-03-07)
+
+
+### Features
+
+* subscribe to graph changes ([a8cd3ce](https://github.com/channelninja/channel.ninja/commit/a8cd3ce3c2c508fd80a642dd8e2df2eb19f08337))
+
+
+### Bug Fixes
+
+* update node instead of save if it already exists ([584f965](https://github.com/channelninja/channel.ninja/commit/584f9651847c2fbdfe3bc0b364351ed80f9a6350))
+
 ## [1.2.1](https://github.com/channelninja/channel.ninja/compare/v1.2.0...v1.2.1) (2023-03-06)
 
 
