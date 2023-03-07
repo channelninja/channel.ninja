@@ -292,6 +292,23 @@ export class GraphService {
   }
 
   public async updatedNode({ public_key, updated_at, alias, sockets, color }: UpdateNode): Promise<void> {
+    const existingNode = await this.nodeRepository.findOneBy({ public_key });
+
+    if (existingNode) {
+      try {
+        await this.nodeRepository.update(public_key, {
+          alias,
+          color,
+          sockets: JSON.stringify(sockets),
+          updated_at: updated_at ? new Date(updated_at) : new Date(),
+        });
+      } catch (error) {
+        console.error('Could not update node', error);
+
+        return;
+      }
+    }
+
     try {
       await this.nodeRepository.save({
         public_key,
