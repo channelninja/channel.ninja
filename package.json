@@ -16,7 +16,7 @@
     "migration:generate": "node --require ts-node/register ./node_modules/typeorm/cli.js migration:generate -d server/core/database/data-source.prod.ts",
     "migration:run": "node --require ts-node/register ./node_modules/typeorm/cli.js migration:run -d server/core/database/data-source.prod.ts",
     "migration:revert": "node --require ts-node/register ./node_modules/typeorm/cli.js migration:revert -d server/core/database/data-source.prod.ts",
-    "prebuild": "rimraf dist",
+    "prebuild": "rimraf dist && rimraf client/build",
     "commit": "cz",
     "format": "prettier --write \"{server,client}/**/*.{ts,tsx,css}\"",
     "prepare": "husky install",
