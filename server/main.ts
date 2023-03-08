@@ -9,16 +9,22 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { RedocModule, RedocOptions } from '@nicholas.braun/nestjs-redoc';
 import connectPgSimple from 'connect-pg-simple';
 import expressSession from 'express-session';
+import { Logger } from 'nestjs-pino';
 import { ChannelNinjaConfig } from './core/config/configuration/channel-ninja.config';
 import { Configuration } from './core/config/configuration/configuration.enum';
 import { DatabaseConfig } from './core/config/configuration/database.config';
 import { Environment } from './core/config/environment.enum';
+import { logger } from './core/logger/logger.middleware';
 
 const pgSession = connectPgSimple(expressSession);
 
 async function bootstrap() {
-  const app = await NestFactory.create<NestExpressApplication>(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule, {
+    bufferLogs: true,
+  });
 
+  app.useLogger(app.get(Logger));
+  app.use(logger);
   app.enableCors();
   app.setGlobalPrefix('api');
   app.useGlobalPipes(

@@ -13,6 +13,7 @@ const mockedChannelNinjaConfig: ChannelNinjaConfig = {
   coinApiKey: '1234',
   apiUrl: 'http://localhost:3001',
   txExplorerUrl: 'https://mempool.space/tx',
+  logLevel: 'trace',
 };
 
 const mockedDatabaseConfig: DatabaseConfig = {

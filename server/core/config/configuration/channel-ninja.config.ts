@@ -6,6 +6,7 @@ export type ChannelNinjaConfig = {
   coinApiKey: string;
   apiUrl: string;
   txExplorerUrl: string;
+  logLevel: string;
 };
 
 const channelNinjaConfig = (): ChannelNinjaConfig => ({
@@ -16,6 +17,7 @@ const channelNinjaConfig = (): ChannelNinjaConfig => ({
   coinApiKey: process.env.COIN_API_KEY,
   apiUrl: process.env.API_URL,
   txExplorerUrl: process.env.TX_EXPLORER_URL || 'https://mempool.space/tx',
+  logLevel: process.env.LOG_LEVEL || 'trace',
 });
 
 export default channelNinjaConfig;

@@ -1,4 +1,5 @@
 import { IsBoolean, IsEnum, IsNumber, IsOptional, IsString } from 'class-validator';
+import { Level } from 'pino';
 import { Environment } from './environment.enum';
 
 export class DevelopmentEnvironmentVariables {
@@ -72,4 +73,8 @@ export class DevelopmentEnvironmentVariables {
   @IsOptional()
   @IsString()
   TX_EXPLORER_URL: string;
+
+  @IsOptional()
+  @IsString()
+  LOG_LEVEL: Level;
 }

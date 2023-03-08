@@ -1,5 +1,5 @@
 import { HttpService } from '@nestjs/axios';
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Cron } from '@nestjs/schedule';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -14,6 +14,8 @@ import { CoinApiResponse } from './fee.types';
 
 @Injectable()
 export class FeesService {
+  private logger = new Logger(FeesService.name);
+
   constructor(
     private settingsService: SettingsService,
     private configService: ConfigService,
@@ -36,7 +38,15 @@ export class FeesService {
 
       return res.data;
     } catch (error) {
-      console.error(error);
+      this.logger.error(error, 'Could not get onchain fee estimate. Using default values.');
+
+      return {
+        fastestFee: 1,
+        halfHourFee: 1,
+        hourFee: 1,
+        economyFee: 1,
+        minimumFee: 1,
+      };
     }
   }
 
@@ -84,7 +94,7 @@ export class FeesService {
     const coinApiKey = this.configService.get<string>('COIN_API_KEY');
 
     if (!coinApiKey) {
-      console.warn(`COIN_API_KEY not set`);
+      this.logger.warn(`COIN_API_KEY not set`);
 
       return null;
     }
@@ -99,7 +109,7 @@ export class FeesService {
 
       return res.data.rate;
     } catch (error) {
-      console.error(error);
+      this.logger.warn(error, 'Could not get exchange rate');
     }
 
     return null;

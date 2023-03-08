@@ -1,4 +1,11 @@
-import { forwardRef, Inject, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import {
+  forwardRef,
+  Inject,
+  Injectable,
+  InternalServerErrorException,
+  Logger,
+  NotFoundException,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import EventEmitter from 'events';
 import {
@@ -22,6 +29,7 @@ import { LndGateway } from './lnd.gateway';
 
 @Injectable()
 export class LndService {
+  private logger = new Logger(LndService.name);
   private lnd: AuthenticatedLnd;
 
   constructor(
@@ -48,23 +56,25 @@ export class LndService {
         is_omitting_channels: true,
       });
     } catch (error) {
+      this.logger.error(error, 'Could not get node info.');
       throw new NotFoundException();
     }
   }
 
   public async fetchNetworkGraph(): Promise<GetNetworkGraphResult> {
-    console.log('fetchNetworkGraph');
+    this.logger.verbose('fetchNetworkGraph - start');
     const start = Date.now();
 
     try {
       const graphData = await getNetworkGraph({ lnd: this.lnd });
 
       const end = Date.now();
-      console.log(`fetchedNetworkGraph in ${end - start}ms`);
+      this.logger.verbose(`fetchNetworkGraph - end`, { duration: end - start });
 
       return graphData;
     } catch (error) {
-      console.log('fetchNetworkGraph', error);
+      this.logger.error(error, 'Could not fetch network graph');
+
       throw new InternalServerErrorException('Could not fetch network graph');
     }
   }
