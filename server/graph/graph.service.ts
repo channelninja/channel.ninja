@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Cron } from '@nestjs/schedule';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -31,6 +31,7 @@ type NodeMap = Map<string, NodeT>;
 @Injectable()
 export class GraphService {
   private nodesMap: NodeMap;
+  private logger = new Logger(GraphService.name);
 
   constructor(
     private lndService: LndService,
@@ -73,7 +74,7 @@ export class GraphService {
 
   @Cron('*/1 * * * *')
   public async updateGraphInMemory(): Promise<void> {
-    console.log('updateGraphInMemory');
+    this.logger.verbose('updateGraphInMemory - start');
     const start = Date.now();
 
     const nodes = await this.nodeRepository.find();
@@ -112,11 +113,11 @@ export class GraphService {
     });
 
     const end = Date.now();
-    console.log(`updatedGraphInMemory in ${end - start}ms`);
+    this.logger.verbose({ duration: end - start }, `updateGraphInMemory - end`);
   }
 
   public async updateGraphInDB(): Promise<void> {
-    console.log('updateGraphInDB');
+    this.logger.verbose('updateGraphInDB - start');
     const start = Date.now();
 
     const { maxLastUpdatedDurationMS } = this.configService.get<SuggestionsConfig>(Configuration.suggestions);
@@ -126,7 +127,7 @@ export class GraphService {
       await this.nodeRepository.clear();
       await this.channelRepository.clear();
     } catch (error) {
-      console.log(error);
+      this.logger.error(error, 'Could not clear graph tables');
     }
 
     for (const node of graphData.nodes) {
@@ -163,12 +164,12 @@ export class GraphService {
     }
 
     const end = Date.now();
-    console.log(`updatedGraphInDB in ${end - start}ms`);
+    this.logger.verbose({ duration: end - start }, `updateGraphInDB`);
   }
 
   public getNodes({ start }: { start: string }): NodeResponseDto[] {
     if (this.nodesMap.size === 0) {
-      console.log('Graph is not ready yet');
+      this.logger.warn('Graph is not ready yet');
 
       throw new NotFoundException('Graph is not ready yet.');
     }
@@ -261,25 +262,21 @@ export class GraphService {
         updated_at: updated_at ? new Date(updated_at) : new Date(),
       });
     } catch (error) {
-      console.error('Could not update channel', error);
+      this.logger.error(error, 'Could not update channel');
       return;
     }
 
     for (const public_key of public_keys) {
-      try {
-        const { alias, updated_at, color, sockets, features } = await this.lndService.getNodeInfo(public_key);
+      const { alias, updated_at, color, sockets, features } = await this.lndService.getNodeInfo(public_key);
 
-        await this.updatedNode({
-          alias,
-          updated_at,
-          color,
-          public_key,
-          sockets: sockets.map((socket) => socket.socket),
-          features,
-        });
-      } catch (error) {
-        console.log(`Could not find node: ${public_key}`);
-      }
+      await this.updatedNode({
+        alias,
+        updated_at,
+        color,
+        public_key,
+        sockets: sockets.map((socket) => socket.socket),
+        features,
+      });
     }
   }
 
@@ -287,7 +284,7 @@ export class GraphService {
     try {
       await this.channelRepository.delete(id);
     } catch (error) {
-      console.error('Could not delete channel', error);
+      this.logger.error(error, 'Could not delete channel');
     }
   }
 
@@ -303,7 +300,7 @@ export class GraphService {
           updated_at: updated_at ? new Date(updated_at) : new Date(),
         });
       } catch (error) {
-        console.error('Could not update node', error);
+        this.logger.error(error, 'Could not update node');
 
         return;
       }
@@ -318,7 +315,7 @@ export class GraphService {
         updated_at: updated_at ? new Date(updated_at) : new Date(),
       });
     } catch (error) {
-      console.error('Could not update node', error);
+      this.logger.error(error, 'Could not update node');
     }
   }
 }
