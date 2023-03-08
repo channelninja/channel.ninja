@@ -19,7 +19,11 @@
     "prebuild": "rimraf dist",
     "commit": "cz",
     "format": "prettier --write \"{server,client}/**/*.{ts,tsx,css}\"",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:cov": "jest --coverage",
+    "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand"
   },
   "author": "",
   "license": "MIT",
