@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.0](https://github.com/channelninja/channel.ninja/compare/v1.3.0...v1.4.0) (2023-03-09)
+
+
+### Features
+
+* add pino logger ([f552ad5](https://github.com/channelninja/channel.ninja/commit/f552ad574104db5849c1eb11c351d7ac67e18ad9))
+
 ## [1.3.0](https://github.com/channelninja/channel.ninja/compare/v1.2.1...v1.3.0) (2023-03-07)
 
 
