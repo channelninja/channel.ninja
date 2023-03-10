@@ -49,6 +49,8 @@ export class GraphService {
     const { forceFetchGraph } = this.configService.get<ChannelNinjaConfig>(Configuration.channelNinja);
     const nodeCountInDB = await this.nodeRepository.count();
 
+    this.logger.verbose(`init - nodeCountInDB: ${nodeCountInDB}, forceFetchGraph: ${forceFetchGraph}`);
+
     if (nodeCountInDB === 0 || forceFetchGraph) {
       await this.updateGraphInDB();
     }
@@ -114,7 +116,7 @@ export class GraphService {
     });
 
     const end = Date.now();
-    this.logger.verbose({ duration: end - start }, `updateGraphInMemory - end`);
+    this.logger.verbose(`updateGraphInMemory - end ${end - start}ms`);
   }
 
   public async updateGraphInDB(): Promise<void> {
@@ -165,7 +167,7 @@ export class GraphService {
     }
 
     const end = Date.now();
-    this.logger.verbose({ duration: end - start }, `updateGraphInDB`);
+    this.logger.verbose(`updateGraphInDB - end ${end - start}ms`);
   }
 
   public getNodes({ start }: { start: string }): NodeResponseDto[] {
