@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.5](https://github.com/channelninja/channel.ninja/compare/v1.4.4...v1.4.5) (2023-03-10)
+
+
+### Bug Fixes
+
+* remove error stack trace for production ([3245d67](https://github.com/channelninja/channel.ninja/commit/3245d67c0b6f6e44f90081df80ee6ebb120f6dbe))
+
 ## [1.4.4](https://github.com/channelninja/channel.ninja/compare/v1.4.3...v1.4.4) (2023-03-10)
 
 
