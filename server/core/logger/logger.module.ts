@@ -13,7 +13,7 @@ import { developmentLogger, productionLogger } from './logger.utils';
         const isProduction = config.get('NODE_ENV') === Environment.Production;
 
         return {
-          useExisting: isProduction ? undefined : true,
+          useExisting: true,
           pinoHttp: {
             logger: isProduction ? productionLogger : developmentLogger,
           },
