@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.3](https://github.com/channelninja/channel.ninja/compare/v1.4.2...v1.4.3) (2023-03-10)
+
+
+### Bug Fixes
+
+* try to fix memory leak ([70c96cc](https://github.com/channelninja/channel.ninja/commit/70c96cc91037093e0be8693192fce05f34195db5))
+
 ## [1.4.2](https://github.com/channelninja/channel.ninja/compare/v1.4.1...v1.4.2) (2023-03-10)
 
 
