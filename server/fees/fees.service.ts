@@ -3,6 +3,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Cron } from '@nestjs/schedule';
 import { InjectRepository } from '@nestjs/typeorm';
+import { handleCatchError } from 'server/shared/utils/handle-catch-error';
 import { Repository } from 'typeorm';
 import { SATS_IN_ONE_BITCOIN } from '../core/global-constans';
 import { FeeUnit } from '../settings/dto/fee-unit.dto';
@@ -38,7 +39,7 @@ export class FeesService {
 
       return res.data;
     } catch (error) {
-      this.logger.error(error, 'Could not get onchain fee estimate. Using default values.');
+      handleCatchError(error, this.logger, 'Could not get onchain fee estimate. Using default values.');
 
       return {
         fastestFee: 1,

@@ -5,6 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { ChannelNinjaConfig } from 'server/core/config/configuration/channel-ninja.config';
 import { Configuration } from 'server/core/config/configuration/configuration.enum';
 import { SuggestionsConfig } from 'server/core/config/configuration/suggestions.config';
+import { handleCatchError } from 'server/shared/utils/handle-catch-error';
 import { Repository } from 'typeorm';
 import { LndService } from '../lnd/lnd.service';
 import { EdgeResponseDto } from './dtos/edge-response.dto';
@@ -127,7 +128,7 @@ export class GraphService {
       await this.nodeRepository.clear();
       await this.channelRepository.clear();
     } catch (error) {
-      this.logger.error(error, 'Could not clear graph tables');
+      handleCatchError(error, this.logger, 'Could not clear graph tables');
     }
 
     for (const node of graphData.nodes) {
@@ -262,7 +263,7 @@ export class GraphService {
         updated_at: updated_at ? new Date(updated_at) : new Date(),
       });
     } catch (error) {
-      this.logger.error(error, 'Could not update channel');
+      handleCatchError(error, this.logger, 'Could not update channel');
       return;
     }
 
@@ -284,7 +285,7 @@ export class GraphService {
     try {
       await this.channelRepository.delete(id);
     } catch (error) {
-      this.logger.error(error, 'Could not delete channel');
+      handleCatchError(error, this.logger, 'Could not delete channel');
     }
   }
 
@@ -315,7 +316,7 @@ export class GraphService {
         updated_at: updated_at ? new Date(updated_at) : new Date(),
       });
     } catch (error) {
-      this.logger.error(error, 'Could not update node');
+      handleCatchError(error, this.logger, 'Could not update node');
     }
   }
 }

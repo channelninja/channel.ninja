@@ -23,6 +23,7 @@ import {
 } from 'lightning';
 import { Configuration } from 'server/core/config/configuration/configuration.enum';
 import { LndNodeConfig } from 'server/core/config/configuration/lnd-node.config';
+import { handleCatchError } from 'server/shared/utils/handle-catch-error';
 import { FeesService } from '../fees/fees.service';
 import { LndInvoiceResponseDto } from './dto/lnd-invoice-response.dto';
 import { LndGateway } from './lnd.gateway';
@@ -56,7 +57,8 @@ export class LndService {
         is_omitting_channels: true,
       });
     } catch (error) {
-      this.logger.error(error, 'Could not get node info.');
+      handleCatchError(error, this.logger, 'Could not get node info.');
+
       throw new NotFoundException();
     }
   }
@@ -73,7 +75,7 @@ export class LndService {
 
       return graphData;
     } catch (error) {
-      this.logger.error(error, 'Could not fetch network graph');
+      handleCatchError(error, this.logger, 'Could not fetch network graph');
 
       throw new InternalServerErrorException('Could not fetch network graph');
     }
