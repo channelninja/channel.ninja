@@ -71,7 +71,7 @@ export class LndService {
       const graphData = await getNetworkGraph({ lnd: this.lnd });
 
       const end = Date.now();
-      this.logger.verbose(`fetchNetworkGraph - end`, { duration: end - start });
+      this.logger.verbose(`fetchNetworkGraph - end ${end - start}ms`);
 
       return graphData;
     } catch (error) {
@@ -116,6 +116,8 @@ export class LndService {
 
     sub.addListener('invoice_updated', async (invoice: SubscribeToInvoiceInvoiceUpdatedEvent) => {
       if (invoice.is_confirmed) {
+        this.logger.log(invoice, 'invoice confirmed');
+
         this.lndGateWay.invoiceConfirmed(invoice.id);
       }
     });
