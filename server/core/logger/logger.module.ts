@@ -16,14 +16,21 @@ import { Environment } from '../config/environment.enum';
       useFactory: async (config: ConfigService) => {
         const isProduction = config.get('NODE_ENV') === Environment.Production;
         const { logLevel: level } = config.get<ChannelNinjaConfig>(Configuration.channelNinja);
+        const formatters = {
+          level: (label: string) => {
+            return { level: label.toUpperCase() };
+          },
+        };
 
         const productionLogger = pino({
           level,
+          formatters,
         });
 
         const developmentLogger = pinoCaller(
           pino({
             level,
+            formatters,
             transport: {
               target: 'pino-pretty',
               options: { singleLine: true },
