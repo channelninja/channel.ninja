@@ -7,6 +7,7 @@ import pinoCaller from 'pino-caller';
 import { ChannelNinjaConfig } from '../config/configuration/channel-ninja.config';
 import { Configuration } from '../config/configuration/configuration.enum';
 import { Environment } from '../config/environment.enum';
+import { formatters } from './logger.utils';
 
 @Module({
   imports: [
@@ -16,11 +17,6 @@ import { Environment } from '../config/environment.enum';
       useFactory: async (config: ConfigService) => {
         const isProduction = config.get('NODE_ENV') === Environment.Production;
         const { logLevel: level } = config.get<ChannelNinjaConfig>(Configuration.channelNinja);
-        const formatters = {
-          level: (label: string) => {
-            return { level: label.toUpperCase() };
-          },
-        };
 
         const productionLogger = pino({
           level,
