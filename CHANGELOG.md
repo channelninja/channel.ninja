@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.4.4](https://github.com/channelninja/channel.ninja/compare/v1.4.3...v1.4.4) (2023-03-10)
+
+
+### Bug Fixes
+
+* fix duplicate http logs in production ([4e417f4](https://github.com/channelninja/channel.ninja/commit/4e417f476ea89b6b1cab4f4f5c5503c7c4968d29))
+* fix FORCE_FETCH_GRAPH default value ([2c693d5](https://github.com/channelninja/channel.ninja/commit/2c693d59fc5664b077c2b63f9b8079eb7daa06a4))
+
 ## [1.4.3](https://github.com/channelninja/channel.ninja/compare/v1.4.2...v1.4.3) (2023-03-10)
 
 
