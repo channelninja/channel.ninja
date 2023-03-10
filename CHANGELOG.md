@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.4.2](https://github.com/channelninja/channel.ninja/compare/v1.4.1...v1.4.2) (2023-03-10)
+
+
+### Bug Fixes
+
+* use same level format for http-print and normal pino logger ([4455380](https://github.com/channelninja/channel.ninja/commit/44553803d5325c1a4c817b38aa337b9cd0620b62))
+
+
+### Reverts
+
+* **deps:** bump pg from 8.9.0 to 8.10.0" ([a861157](https://github.com/channelninja/channel.ninja/commit/a86115782cac2fa06f5b9da3a5f37b515247892f))
+
 ## [1.4.1](https://github.com/channelninja/channel.ninja/compare/v1.4.0...v1.4.1) (2023-03-10)
 
 
