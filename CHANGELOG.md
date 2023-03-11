@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.4.7](https://github.com/channelninja/channel.ninja/compare/v1.4.6...v1.4.7) (2023-03-11)
+
+
+### Bug Fixes
+
+* prevent multiple api calls on pubkey input change ([5f74627](https://github.com/channelninja/channel.ninja/commit/5f74627d2c23d2f4230bf522653d123a27dc5608))
+* **web-ln:** always display 'get from extension' button ([a22a303](https://github.com/channelninja/channel.ninja/commit/a22a30397ccd4d0763ab1a4bb878a615ff53b9bd)), closes [#53](https://github.com/channelninja/channel.ninja/issues/53)
+
 ## [1.4.6](https://github.com/channelninja/channel.ninja/compare/v1.4.5...v1.4.6) (2023-03-11)
 
 
