@@ -71,6 +71,7 @@
     "socket.io-client": "^4.6.1",
     "throttle-debounce": "^5.0.0",
     "typeorm": "^0.3.12",
+    "use-debounce": "^9.0.3",
     "yup": "^1.0.2"
   },
   "devDependencies": {

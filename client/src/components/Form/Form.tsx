@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useDebounce } from 'use-debounce';
 import { selectIsMaintenanceMode } from '../../redux/global-slice';
 import { useAppSelector } from '../../redux/hooks';
 import GetPubKeyFromExtensionButton from '../WebLN';
@@ -7,12 +8,13 @@ import './form.css';
 const Form = ({ onSubmit }: { onSubmit: ({ pubKey }: { pubKey: string }) => void }) => {
   const [pubKey, setPubKey] = useState('');
   const isMaintenanceMode = useAppSelector(selectIsMaintenanceMode);
+  const [debouncedPubkey] = useDebounce(pubKey, 500);
 
   useEffect(() => {
-    if (pubKey) {
-      onSubmit({ pubKey });
+    if (debouncedPubkey) {
+      onSubmit({ pubKey: debouncedPubkey });
     }
-  }, [pubKey, onSubmit]);
+  }, [debouncedPubkey, onSubmit]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPubKey(e.target.value);
