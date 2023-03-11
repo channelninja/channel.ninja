@@ -1,25 +1,31 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { TooltipKey } from './tooltip.enum';
 
+export enum TooltipType {
+  ERROR = 'error',
+  INFO = 'info',
+}
+
 export type TooltipState = {
   key: TooltipKey | undefined;
-  message?: string;
+  type?: TooltipType;
 };
 
 const initialState: TooltipState = {
   key: undefined,
-  message: undefined,
 };
 
 export const tooltipSlice = createSlice({
   name: 'tooltip',
   initialState,
   reducers: {
-    tooltipChanged: (state, action: PayloadAction<TooltipKey>) => {
-      state.key = action.payload;
+    tooltipChanged: (state, action: PayloadAction<{ key: TooltipKey; type?: TooltipType }>) => {
+      state.key = action.payload.key;
+      state.type = action.payload.type;
     },
     resetTooltip: (state) => {
       state.key = undefined;
+      state.type = undefined;
     },
     ninjaMouseEntered: (state) => {
       state.key = TooltipKey.NINJA_HOVERED;

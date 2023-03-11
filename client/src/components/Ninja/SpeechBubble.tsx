@@ -72,11 +72,27 @@ const SpeechBubble = () => {
       case TooltipKey.ADDRESS_CLICKED:
         return <p>Address copied to clipboard.</p>;
       case TooltipKey.GRAPH_NOT_READY:
-        return <p>I'm updating my network graph at the moment. Please try again in a few minutes</p>;
+        return <p>I'm updating my network graph at the moment. Please try again in a few minutes.</p>;
       case TooltipKey.CHANNEL_OPENED:
-        return <p>Channel opened successfully</p>;
+        return <p>Channel opened successfully.</p>;
       case TooltipKey.CHANNEL_OPENED_FAIL:
         return <p>Could not open channel.</p>;
+      case TooltipKey.NO_WEBLN_PUBKEY:
+        return <p>Your selected WebLN account doesn't have a pubkey.</p>;
+      case TooltipKey.NO_WEBLN_EXTENSION:
+        return (
+          <p>
+            You don't have a Lightning extension yet. For a better experience on channel.ninja download Alby at{' '}
+            <a
+              className="underline hover:no-underline"
+              href="https://getalby.com/"
+              target="_blank"
+              rel="noreferrer"
+            >
+              https://getalby.com
+            </a>
+          </p>
+        );
       default:
         return undefined;
     }
@@ -87,7 +103,7 @@ const SpeechBubble = () => {
       case NinjaText.CONNECTING:
         return <p>connecting...</p>;
       case NinjaText.CONNECTED:
-        return <p>Enter your ⚡️ node's pubkey to find recommended channel partners.</p>;
+        return <p>Enter your lightning ⚡️ node's pubkey to find recommended channel partners.</p>;
       case NinjaText.LOADING:
         return <p>Loading suggestions...</p>;
       case NinjaText.QR_CODE:

@@ -1,4 +1,7 @@
 import React from 'react';
+import { useTimeoutTooltip } from '../Ninja/hooks/use-timeout-tooltip';
+import { TooltipType } from '../Ninja/tooltip-slice';
+import { TooltipKey } from '../Ninja/tooltip.enum';
 import './webln.css';
 
 type GetPubKeyFromExtensionButtonProps = {
@@ -6,6 +9,8 @@ type GetPubKeyFromExtensionButtonProps = {
 };
 
 function GetPubKeyFromExtensionButton({ setPubKey }: GetPubKeyFromExtensionButtonProps) {
+  const setTooltip = useTimeoutTooltip();
+
   const handleClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
 
@@ -19,7 +24,7 @@ function GetPubKeyFromExtensionButton({ setPubKey }: GetPubKeyFromExtensionButto
           if (info.node.pubkey) {
             setPubKey(info.node.pubkey);
           } else {
-            alert('Your current account does not have a public key');
+            setTooltip(TooltipKey.NO_WEBLN_PUBKEY, 7_000, TooltipType.ERROR);
           }
         } catch (error) {
           console.error('Failed to get node info', error);
@@ -30,7 +35,7 @@ function GetPubKeyFromExtensionButton({ setPubKey }: GetPubKeyFromExtensionButto
         alert((error as Error).message);
       }
     } else {
-      alert("You don't have a Lightning extension yet. Try Alby at https://getalby.com/");
+      setTooltip(TooltipKey.NO_WEBLN_EXTENSION, 7_000, TooltipType.ERROR);
     }
   };
 

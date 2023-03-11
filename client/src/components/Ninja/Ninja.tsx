@@ -1,16 +1,18 @@
+import classNames from 'classnames';
 import { useState } from 'react';
-import { useAppDispatch } from '../../redux/hooks';
+import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { CHANNEL_NINJA_PUB_KEY } from '../../utils/global-constants';
 import { useTimeoutTooltip } from './hooks/use-timeout-tooltip';
 import './ninja.css';
 import SpeechBubble from './SpeechBubble';
-import { ninjaMouseEntered, resetTooltip } from './tooltip-slice';
+import { ninjaMouseEntered, resetTooltip, TooltipType } from './tooltip-slice';
 import { TooltipKey } from './tooltip.enum';
 
 const Ninja = () => {
   const dispatch = useAppDispatch();
   const [isHidden, setIsHidden] = useState(false);
   const setTooltip = useTimeoutTooltip();
+  const tooltipType = useAppSelector((state) => state.tooltip.type);
 
   const handleNinjaMouseEnter = () => {
     if (window.innerWidth > 768) {
@@ -39,7 +41,9 @@ const Ninja = () => {
       {!isHidden ? <SpeechBubble /> : null}
 
       <img
-        className="ninja__image"
+        className={classNames('ninja__image', {
+          'animate-error': tooltipType === TooltipType.ERROR,
+        })}
         src="/logo192.png"
         alt="logo"
         width={100}

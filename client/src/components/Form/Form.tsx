@@ -41,7 +41,7 @@ const Form = ({ onSubmit }: { onSubmit: ({ pubKey }: { pubKey: string }) => void
         />
       </form>
 
-      {window.webln ? (
+      {window.webln || window.innerWidth > 768 ? (
         <div className="form__webln-button-wrap">
           <GetPubKeyFromExtensionButton setPubKey={setPubKey} />
         </div>
