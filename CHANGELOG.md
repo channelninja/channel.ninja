@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.6](https://github.com/channelninja/channel.ninja/compare/v1.4.5...v1.4.6) (2023-03-11)
+
+
+### Bug Fixes
+
+* fix logger again ([f4d6c78](https://github.com/channelninja/channel.ninja/commit/f4d6c785dbff2aec1432c012f8e66ecadf942e28))
+
 ## [1.4.5](https://github.com/channelninja/channel.ninja/compare/v1.4.4...v1.4.5) (2023-03-10)
 
 
