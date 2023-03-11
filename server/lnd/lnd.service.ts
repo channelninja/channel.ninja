@@ -18,8 +18,6 @@ import {
   getNode,
   GetNodeResult,
   subscribeToGraph,
-  subscribeToInvoice,
-  SubscribeToInvoiceInvoiceUpdatedEvent,
 } from 'lightning';
 import { Configuration } from 'server/core/config/configuration/configuration.enum';
 import { LndNodeConfig } from 'server/core/config/configuration/lnd-node.config';
@@ -49,7 +47,11 @@ export class LndService {
     return subscribeToGraph({ lnd: this.lnd });
   }
 
-  public async getNodeInfo(pubkey: string): Promise<GetNodeResult> {
+  public async getNodeInfo(pubkey: string, skipTrace = false): Promise<GetNodeResult> {
+    if (!skipTrace) {
+      this.logger.verbose({ pubkey }, 'getNodeInfo');
+    }
+
     try {
       return await getNode({
         lnd: this.lnd,
@@ -82,6 +84,8 @@ export class LndService {
   }
 
   public async getOrCreateInvoice(invoiceId?: string): Promise<LndInvoiceResponseDto> {
+    this.logger.verbose({ invoiceId }, 'getOrCreateInvoice');
+
     if (invoiceId) {
       const invoice = await getInvoice({ lnd: this.lnd, id: invoiceId });
 
@@ -102,6 +106,7 @@ export class LndService {
   }
 
   public async createInvoice(): Promise<LndInvoiceResponseDto> {
+    this.logger.verbose('createInvoice');
     const fees = await this.feesService.getFee();
     const expires_at = new Date(Date.now() + 1000 * 60 * 60 * 1).toISOString();
     const tokens = fees;
@@ -110,16 +115,6 @@ export class LndService {
       lnd: this.lnd,
       tokens,
       expires_at,
-    });
-
-    const sub = subscribeToInvoice({ id: createdInvoice.id, lnd: this.lnd });
-
-    sub.addListener('invoice_updated', async (invoice: SubscribeToInvoiceInvoiceUpdatedEvent) => {
-      if (invoice.is_confirmed) {
-        this.logger.log(invoice, 'invoice confirmed');
-
-        this.lndGateWay.invoiceConfirmed(invoice.id);
-      }
     });
 
     return {
@@ -133,6 +128,8 @@ export class LndService {
     const invoice = await getInvoice({ lnd: this.lnd, id });
 
     if (invoice && invoice.is_confirmed) {
+      this.logger.log(invoice, 'invoice confirmed');
+
       this.lndGateWay.invoiceConfirmed(invoice.id);
     }
   }

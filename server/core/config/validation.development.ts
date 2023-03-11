@@ -77,4 +77,8 @@ export class DevelopmentEnvironmentVariables {
   @IsOptional()
   @IsString()
   LOG_LEVEL: Level;
+
+  @IsOptional()
+  @IsString()
+  LOGTAIL_TOKEN: string;
 }

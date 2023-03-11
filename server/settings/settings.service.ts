@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, Repository } from 'typeorm';
 import { DEFAULT_FEE } from '../fees/default-fee.constant';
@@ -11,19 +11,26 @@ import { SettingsKey } from './settings-key.enum';
 
 @Injectable()
 export class SettingsService {
+  private logger = new Logger(SettingsService.name);
   constructor(@InjectRepository(Setting) private settingsRepository: Repository<Setting>) {}
 
   public async getSettings(): Promise<GetSettingsResponseDto[]> {
+    this.logger.verbose('getSettings');
+
     const settings = await this.settingsRepository.find();
 
     return settings;
   }
 
   public async set({ key, value }: { key: SettingsKey; value: string }): Promise<void> {
+    this.logger.verbose({ key, value }, 'set');
+
     await this.settingsRepository.save({ key, value });
   }
 
   public async isMaintenanceMode(): Promise<boolean> {
+    this.logger.verbose('isMaintenanceMode');
+
     const maintenanceSetting = await this.settingsRepository.findOne({ where: { key: SettingsKey.maintenance } });
 
     if (!maintenanceSetting) {
@@ -34,6 +41,8 @@ export class SettingsService {
   }
 
   public async getFeeSettings(): Promise<FeeSettingsDto> {
+    this.logger.verbose('getFeeSettings');
+
     const defaultSettings: FeeSettingsDto = {
       [SettingsKey.fee_amount]: DEFAULT_FEE,
       [SettingsKey.fee_unit]: FeeUnit.sats,

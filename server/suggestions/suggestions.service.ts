@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Configuration } from 'server/core/config/configuration/configuration.enum';
 import { SuggestionsConfig } from 'server/core/config/configuration/suggestions.config';
@@ -7,9 +7,12 @@ import { GraphService } from '../graph/graph.service';
 
 @Injectable()
 export class SuggestionsService {
+  private logger = new Logger(SuggestionsService.name);
   constructor(private graphService: GraphService, private configService: ConfigService) {}
 
   public async getSuggestions(start: string): Promise<NodeResponseDto[]> {
+    this.logger.verbose({ start }, `getSuggestions`);
+
     const nodes = this.graphService.getNodes({ start });
     const { maxChannels, minAvgChannelSize, minChannels, minDistance, maxLastUpdatedDurationMS } =
       this.configService.get<SuggestionsConfig>(Configuration.suggestions);

@@ -49,7 +49,7 @@ export class GraphService {
     const { forceFetchGraph } = this.configService.get<ChannelNinjaConfig>(Configuration.channelNinja);
     const nodeCountInDB = await this.nodeRepository.count();
 
-    this.logger.verbose(`init - nodeCountInDB: ${nodeCountInDB}, forceFetchGraph: ${forceFetchGraph}`);
+    this.logger.debug(`init - nodeCountInDB: ${nodeCountInDB}, forceFetchGraph: ${forceFetchGraph}`);
 
     if (nodeCountInDB === 0 || forceFetchGraph) {
       await this.updateGraphInDB();
@@ -77,7 +77,7 @@ export class GraphService {
 
   @Cron('*/1 * * * *')
   public async updateGraphInMemory(): Promise<void> {
-    this.logger.verbose('updateGraphInMemory - start');
+    this.logger.debug('updateGraphInMemory - start');
     const start = Date.now();
 
     const nodes = await this.nodeRepository.find();
@@ -116,11 +116,11 @@ export class GraphService {
     });
 
     const end = Date.now();
-    this.logger.verbose(`updateGraphInMemory - end ${end - start}ms`);
+    this.logger.debug(`updateGraphInMemory - end ${end - start}ms`);
   }
 
   public async updateGraphInDB(): Promise<void> {
-    this.logger.verbose('updateGraphInDB - start');
+    this.logger.debug('updateGraphInDB - start');
     const start = Date.now();
 
     const { maxLastUpdatedDurationMS } = this.configService.get<SuggestionsConfig>(Configuration.suggestions);
@@ -167,7 +167,7 @@ export class GraphService {
     }
 
     const end = Date.now();
-    this.logger.verbose(`updateGraphInDB - end ${end - start}ms`);
+    this.logger.debug(`updateGraphInDB - end ${end - start}ms`);
   }
 
   public getNodes({ start }: { start: string }): NodeResponseDto[] {
@@ -270,7 +270,7 @@ export class GraphService {
     }
 
     for (const public_key of public_keys) {
-      const { alias, updated_at, color, sockets, features } = await this.lndService.getNodeInfo(public_key);
+      const { alias, updated_at, color, sockets, features } = await this.lndService.getNodeInfo(public_key, true);
 
       await this.updatedNode({
         alias,

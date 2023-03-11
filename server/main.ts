@@ -9,12 +9,11 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { RedocModule, RedocOptions } from '@nicholas.braun/nestjs-redoc';
 import connectPgSimple from 'connect-pg-simple';
 import expressSession from 'express-session';
-import { Logger } from 'nestjs-pino';
+import { Logger, LoggerErrorInterceptor } from 'nestjs-pino';
 import { ChannelNinjaConfig } from './core/config/configuration/channel-ninja.config';
 import { Configuration } from './core/config/configuration/configuration.enum';
 import { DatabaseConfig } from './core/config/configuration/database.config';
 import { Environment } from './core/config/environment.enum';
-import { logger } from './core/logger/logger.middleware';
 
 const pgSession = connectPgSimple(expressSession);
 
@@ -23,8 +22,20 @@ async function bootstrap() {
     bufferLogs: true,
   });
 
+  const configService = app.get<ConfigService>(ConfigService);
+  const NODE_ENV = configService.get<Environment>('NODE_ENV');
+  const {
+    database,
+    host,
+    password,
+    port,
+    ca,
+    username: user,
+  } = configService.get<DatabaseConfig>(Configuration.database);
+  const { sessionSecret } = configService.get<ChannelNinjaConfig>(Configuration.channelNinja);
+
   app.useLogger(app.get(Logger));
-  app.use(logger);
+  app.useGlobalInterceptors(new LoggerErrorInterceptor());
   app.enableCors();
   app.setGlobalPrefix('api');
   app.useGlobalPipes(
@@ -40,18 +51,6 @@ async function bootstrap() {
   );
 
   app.set('trust proxy', 1); // trust first proxy
-
-  const configService = app.get<ConfigService>(ConfigService);
-  const {
-    database,
-    host,
-    password,
-    port,
-    ca,
-    username: user,
-  } = configService.get<DatabaseConfig>(Configuration.database);
-  const NODE_ENV = configService.get<Environment>('NODE_ENV');
-  const { sessionSecret } = configService.get<ChannelNinjaConfig>(Configuration.channelNinja);
 
   app.use(
     session({

@@ -7,6 +7,7 @@ export type ChannelNinjaConfig = {
   apiUrl: string;
   txExplorerUrl: string;
   logLevel: string;
+  logtailToken?: string;
 };
 
 const channelNinjaConfig = (): ChannelNinjaConfig => ({
@@ -18,6 +19,7 @@ const channelNinjaConfig = (): ChannelNinjaConfig => ({
   apiUrl: process.env.API_URL,
   txExplorerUrl: process.env.TX_EXPLORER_URL || 'https://mempool.space/tx',
   logLevel: process.env.LOG_LEVEL || 'trace',
+  logtailToken: process.env.LOGTAIL_TOKEN,
 });
 
 export default channelNinjaConfig;
