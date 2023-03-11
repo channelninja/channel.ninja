@@ -5,7 +5,7 @@ import { Cron } from '@nestjs/schedule';
 import { InjectRepository } from '@nestjs/typeorm';
 import { handleCatchError } from 'server/shared/utils/handle-catch-error';
 import { Repository } from 'typeorm';
-import { SATS_IN_ONE_BITCOIN } from '../core/global-constans';
+import { SATS_IN_ONE_BITCOIN } from '../../core/global-constans';
 import { FeeUnit } from '../settings/dto/fee-unit.dto';
 import { SettingsService } from '../settings/settings.service';
 import { DEFAULT_FEE } from './default-fee.constant';
