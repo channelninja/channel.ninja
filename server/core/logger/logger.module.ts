@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { LoggerModule as PinoLoggerModule } from 'nestjs-pino';
+import { join } from 'path';
 import pino from 'pino';
 import { ChannelNinjaConfig } from '../config/configuration/channel-ninja.config';
 import { Configuration } from '../config/configuration/configuration.enum';
@@ -22,8 +23,12 @@ import { Environment } from '../config/environment.enum';
         };
 
         const pinoPrettyTarget: pino.TransportTargetOptions<Record<string, any>> = {
-          target: 'pino-pretty',
-          options: { singleLine: true, colorize: true },
+          target: join(__dirname, 'pino-pretty-target'),
+          options: {
+            singleLine: true,
+            colorize: true,
+            ignore: 'pid,hostname,levelValue,req,res,namespace,responseTime',
+          },
           level,
         };
 
