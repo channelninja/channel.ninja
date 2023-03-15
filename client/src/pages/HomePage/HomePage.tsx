@@ -101,14 +101,17 @@ const HomePage = () => {
         if (typeof error === 'string') {
           if (error === 'GRAPH_NOT_READY') {
             setTooltip(TooltipKey.GRAPH_NOT_READY, 10_000, TooltipType.ERROR);
+            return;
           }
 
           if (error === 'NODE_NOT_FOUND') {
             setTooltip(TooltipKey.NODE_NOT_FOUND, 10_000, TooltipType.ERROR);
+            return;
           }
 
           if (error === 'NODE_HAS_NO_PEERS') {
             setTooltip(TooltipKey.NODE_HAS_NO_PEERS, 10_000, TooltipType.ERROR);
+            return;
           }
         }
 
