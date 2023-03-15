@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.10](https://github.com/channelninja/channel.ninja/compare/v1.4.9...v1.4.10) (2023-03-15)
+
+
+### Bug Fixes
+
+* fix showing only general fetch error ([64dcf8a](https://github.com/channelninja/channel.ninja/commit/64dcf8a268cabd6723a680f611c9c8cb298ed701))
+
 ## [1.4.9](https://github.com/channelninja/channel.ninja/compare/v1.4.8...v1.4.9) (2023-03-15)
 
 
