@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.9](https://github.com/channelninja/channel.ninja/compare/v1.4.8...v1.4.9) (2023-03-15)
+
+
+### Bug Fixes
+
+* improved error handling ([388a03f](https://github.com/channelninja/channel.ninja/commit/388a03f1b066cfb5e24b65daba1eb5468a4df6da))
+
 ## [1.4.8](https://github.com/channelninja/channel.ninja/compare/v1.4.7...v1.4.8) (2023-03-15)
 
 
