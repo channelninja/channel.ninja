@@ -4,6 +4,7 @@ import {
   selectInvoice,
   selectInvoicePaid,
   selectIsSocketConnected,
+  selectLoading,
   selectNodes,
   selectPubKey,
 } from '../../redux/global-slice';
@@ -16,9 +17,14 @@ export const selectNinjaText = createSelector(
   selectInvoicePaid,
   selectNodes,
   selectIsOpenChannelDialogOpen,
-  (isSocketConnected, pubKey, invoice, invoicePaid, nodes, isOpenChannelDialogOpen) => {
+  selectLoading,
+  (isSocketConnected, pubKey, invoice, invoicePaid, nodes, isOpenChannelDialogOpen, loading) => {
     if (!isSocketConnected) {
       return NinjaText.CONNECTING;
+    }
+
+    if (loading) {
+      return NinjaText.LOADING;
     }
 
     if (isOpenChannelDialogOpen) {
@@ -31,10 +37,6 @@ export const selectNinjaText = createSelector(
 
     if (nodes && nodes.length === 0) {
       return NinjaText.NO_NODES_FOUND;
-    }
-
-    if (pubKey && !nodes) {
-      return NinjaText.LOADING;
     }
 
     if (pubKey && nodes && invoice && !invoicePaid) {

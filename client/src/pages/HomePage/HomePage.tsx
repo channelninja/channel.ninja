@@ -12,12 +12,12 @@ import Social from '../../components/Social';
 import { useSockets } from '../../context/useSocket';
 import OpenChannelForm from '../../features/WebLN/components/OpenChannelForm';
 import { openChannelTargetNodeChanged } from '../../features/WebLN/web-ln-slice';
-import { LndService, SuggestionsService } from '../../generated';
+import { LndService } from '../../generated';
 import {
+  fetchSuggestions,
   invoiceFetched,
   invoicePaid,
   nodeInfoChanged,
-  nodesFetched,
   validPubKeyEntered,
 } from '../../redux/global-slice';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
@@ -78,20 +78,6 @@ const HomePage = () => {
     }
   }, [state.invoice, state.invoicePaid, state.nodes, getInvoice]);
 
-  const fetchSuggestions = useCallback(
-    async ({ pubKey }: { pubKey: string }) => {
-      const response = await SuggestionsService.getSuggestions(pubKey);
-
-      const nodes = response.map((node) => ({
-        ...node,
-        size: (node.channelCount * node.channelCount) / 2,
-      }));
-
-      dispatch(nodesFetched(nodes));
-    },
-    [dispatch],
-  );
-
   const handleFormSubmit = useCallback(
     async ({ pubKey }: { pubKey: string }) => {
       try {
@@ -110,14 +96,26 @@ const HomePage = () => {
       }
 
       try {
-        if (pubKey) {
-          await fetchSuggestions({ pubKey });
-        }
+        await dispatch(fetchSuggestions(pubKey)).unwrap();
       } catch (error) {
-        setTooltip(TooltipKey.GRAPH_NOT_READY, 10000);
+        if (typeof error === 'string') {
+          if (error === 'GRAPH_NOT_READY') {
+            setTooltip(TooltipKey.GRAPH_NOT_READY, 10_000, TooltipType.ERROR);
+          }
+
+          if (error === 'NODE_NOT_FOUND') {
+            setTooltip(TooltipKey.NODE_NOT_FOUND, 10_000, TooltipType.ERROR);
+          }
+
+          if (error === 'NODE_HAS_NO_PEERS') {
+            setTooltip(TooltipKey.NODE_HAS_NO_PEERS, 10_000, TooltipType.ERROR);
+          }
+        }
+
+        setTooltip(TooltipKey.ERROR_FETCHING_SUGGESTIONS, 10_000, TooltipType.ERROR);
       }
     },
-    [dispatch, setTooltip, fetchSuggestions],
+    [dispatch, setTooltip],
   );
 
   const handleDialogCloseClick = () => {

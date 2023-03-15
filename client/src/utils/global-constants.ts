@@ -1,1 +1,2 @@
-export const CHANNEL_NINJA_PUB_KEY = '03f3b5168905b7e4a0e9d11471821b3ef07beac4bcb2aaeb4d42500ef836b0b060';
+export const CHANNEL_NINJA_PUB_KEY =
+  '03f3b5168905b7e4a0e9d11471821b3ef07beac4bcb2aaeb4d42500ef836b0b060@abktagtv7rdad7ht7omhpzblhb6wc64ntpo3of7yljm2ao6dw7fkubid.onion:9735';

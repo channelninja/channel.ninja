@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Configuration } from 'server/core/config/configuration/configuration.enum';
 import { SuggestionsConfig } from 'server/core/config/configuration/suggestions.config';
@@ -13,7 +13,38 @@ export class SuggestionsService {
   public async getSuggestions(start: string): Promise<NodeResponseDto[]> {
     this.logger.verbose({ start }, `getSuggestions`);
 
-    const nodes = this.graphService.getNodes({ start });
+    const startNode = await this.graphService.findOrAddNode(start);
+
+    if (!startNode) {
+      throw new NotFoundException('NODE_NOT_FOUND');
+    }
+
+    if (startNode.peers.size === 0) {
+      throw new NotFoundException('NODE_HAS_NO_PEERS');
+    }
+
+    const nodes = this.graphService.getNodes(startNode);
+    const filteredNodes = this.filterNodes(nodes);
+    const edges = await this.graphService.getEdges(filteredNodes);
+
+    const interConnectedNodes = new Map<string, number>();
+
+    for (const edge of edges) {
+      interConnectedNodes.set(edge.source, (interConnectedNodes.get(edge.source) || 0) + 1);
+      interConnectedNodes.set(edge.target, (interConnectedNodes.get(edge.target) || 0) + 1);
+    }
+
+    return filteredNodes
+      .map((node) => ({
+        ...node,
+        connections: interConnectedNodes.get(node.id) || 0,
+      }))
+      .sort((a, b) => b.connections - a.connections);
+  }
+
+  private filterNodes(nodes: NodeResponseDto[]): NodeResponseDto[] {
+    this.logger.verbose(`filterNodes`);
+
     const { maxChannels, minAvgChannelSize, minChannels, minDistance, maxLastUpdatedDurationMS } =
       this.configService.get<SuggestionsConfig>(Configuration.suggestions);
 
@@ -39,20 +70,6 @@ export class SuggestionsService {
       return true;
     });
 
-    const edges = await this.graphService.getEdges(filteredNodes);
-
-    const interConnectedNodes = new Map<string, number>();
-
-    for (const edge of edges) {
-      interConnectedNodes.set(edge.source, (interConnectedNodes.get(edge.source) || 0) + 1);
-      interConnectedNodes.set(edge.target, (interConnectedNodes.get(edge.target) || 0) + 1);
-    }
-
-    return filteredNodes
-      .map((node) => ({
-        ...node,
-        connections: interConnectedNodes.get(node.id) || 0,
-      }))
-      .sort((a, b) => b.connections - a.connections);
+    return filteredNodes;
   }
 }

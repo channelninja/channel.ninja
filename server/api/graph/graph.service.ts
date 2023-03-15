@@ -1,4 +1,4 @@
-import { Injectable, Logger, NotFoundException } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, Logger, NotFoundException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Cron } from '@nestjs/schedule';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -49,7 +49,7 @@ export class GraphService {
     const { forceFetchGraph } = this.configService.get<ChannelNinjaConfig>(Configuration.channelNinja);
     const nodeCountInDB = await this.nodeRepository.count();
 
-    this.logger.debug(`init - nodeCountInDB: ${nodeCountInDB}, forceFetchGraph: ${forceFetchGraph}`);
+    this.logger.log({ forceFetchGraph, nodeCountInDB }, `init`);
 
     if (nodeCountInDB === 0 || forceFetchGraph) {
       await this.updateGraphInDB();
@@ -77,7 +77,7 @@ export class GraphService {
 
   @Cron('*/1 * * * *')
   public async updateGraphInMemory(): Promise<void> {
-    this.logger.debug('updateGraphInMemory - start');
+    this.logger.verbose('updateGraphInMemory - start');
     const start = Date.now();
 
     const nodes = await this.nodeRepository.find();
@@ -116,11 +116,12 @@ export class GraphService {
     });
 
     const end = Date.now();
-    this.logger.debug(`updateGraphInMemory - end ${end - start}ms`);
+    this.logger.verbose(`updateGraphInMemory - end ${end - start}ms`);
   }
 
   public async updateGraphInDB(): Promise<void> {
-    this.logger.debug('updateGraphInDB - start');
+    this.logger.verbose('updateGraphInDB - start');
+
     const start = Date.now();
 
     const { maxLastUpdatedDurationMS } = this.configService.get<SuggestionsConfig>(Configuration.suggestions);
@@ -167,19 +168,7 @@ export class GraphService {
     }
 
     const end = Date.now();
-    this.logger.debug(`updateGraphInDB - end ${end - start}ms`);
-  }
-
-  public getNodes({ start }: { start: string }): NodeResponseDto[] {
-    if (this.nodesMap.size === 0) {
-      this.logger.warn('Graph is not ready yet');
-
-      throw new NotFoundException('Graph is not ready yet.');
-    }
-
-    const nodes = this.breadthFirstTraveral({ start });
-
-    return nodes;
+    this.logger.verbose(`updateGraphInDB - end ${end - start}ms`);
   }
 
   public async getEdges(nodes: NodeResponseDto[]): Promise<EdgeResponseDto[]> {
@@ -203,8 +192,8 @@ export class GraphService {
     return edgeResponseDto;
   }
 
-  private breadthFirstTraveral({ start }: { start: string }): NodeResponseDto[] {
-    const startNode = this.nodesMap.get(start);
+  public getNodes(startNode: NodeT): NodeResponseDto[] {
+    this.logger.verbose({ startNode }, 'breadthFirstTraversal');
 
     const queue: NodeT[] = [];
     queue.push(startNode);
@@ -302,6 +291,45 @@ export class GraphService {
       });
     } catch (error) {
       handleCatchError(error, this.logger, 'Could not update node');
+    }
+  }
+
+  public async findOrAddNode(pubkey: string): Promise<NodeT> {
+    this.logger.verbose({ pubkey }, 'findOrAddNode');
+
+    if (this.nodesMap.size === 0) {
+      this.logger.warn('Graph is not ready yet');
+
+      throw new InternalServerErrorException('GRAPH_NOT_READY');
+    }
+
+    const node = this.nodesMap.get(pubkey);
+
+    if (node) {
+      return node;
+    }
+
+    this.logger.warn('Node not found in nodesMap, trying to add in manually');
+
+    try {
+      const { alias, updated_at, color, sockets, features } = await this.lndService.getNodeInfo(pubkey);
+
+      await this.updatedNode({
+        alias,
+        updated_at,
+        color,
+        public_key: pubkey,
+        sockets: sockets.map((socket) => socket.socket),
+        features,
+      });
+
+      await this.updateGraphInMemory();
+
+      return this.nodesMap.get(pubkey);
+    } catch (error) {
+      this.logger.error({ error }, 'Could not find or update node');
+
+      throw new NotFoundException('Node not found');
     }
   }
 }

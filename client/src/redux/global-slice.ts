@@ -1,7 +1,18 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { InitResponseDto, LndInvoiceResponseDto, NodeInfoDto, NodeResponseDto } from '../generated';
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import {
+  ApiError,
+  InitResponseDto,
+  LndInvoiceResponseDto,
+  NodeInfoDto,
+  NodeResponseDto,
+  SuggestionsService,
+} from '../generated';
 import { RootState } from './store';
 
+export enum FETCH_SUGGESTIONS_STATUS {
+  IDLE = 'IDLE',
+  LOADING = 'LOADING',
+}
 export interface GlobalState {
   isSocketConnected?: boolean;
   pubKey?: string;
@@ -13,6 +24,7 @@ export interface GlobalState {
   isMaintenanceMode: boolean;
   transactionIdsByPubkey: { [pubkey: string]: string };
   txExplorerUrl?: string;
+  fetchSuggestionsStatus: FETCH_SUGGESTIONS_STATUS;
 }
 
 const initialState: GlobalState = {
@@ -20,11 +32,39 @@ const initialState: GlobalState = {
   invoicePaid: false,
   isMaintenanceMode: false,
   transactionIdsByPubkey: {},
+  fetchSuggestionsStatus: FETCH_SUGGESTIONS_STATUS.IDLE,
 };
+
+export const fetchSuggestions = createAsyncThunk(
+  'global/fetchSuggestions',
+  async (pubkey: string, { rejectWithValue }) => {
+    try {
+      const nodes = await SuggestionsService.getSuggestions(pubkey);
+
+      return nodes;
+    } catch (error) {
+      if (error instanceof ApiError) {
+        return rejectWithValue(error.body.message);
+      }
+    }
+  },
+);
 
 export const globalSlice = createSlice({
   name: 'global',
   initialState,
+  extraReducers: (builder) => {
+    builder.addCase(fetchSuggestions.pending, (state) => {
+      state.fetchSuggestionsStatus = FETCH_SUGGESTIONS_STATUS.LOADING;
+    });
+    builder.addCase(fetchSuggestions.fulfilled, (state, action) => {
+      state.fetchSuggestionsStatus = FETCH_SUGGESTIONS_STATUS.IDLE;
+      state.nodes = action.payload;
+    });
+    builder.addCase(fetchSuggestions.rejected, (state) => {
+      state.fetchSuggestionsStatus = FETCH_SUGGESTIONS_STATUS.IDLE;
+    });
+  },
   reducers: {
     initApp: (state, action: PayloadAction<InitResponseDto & { availableWebLNMethods: string[] }>) => {
       state.isMaintenanceMode = action.payload.maintenance;
@@ -36,9 +76,6 @@ export const globalSlice = createSlice({
     },
     invoiceFetched: (state, action: PayloadAction<LndInvoiceResponseDto>) => {
       state.invoice = action.payload;
-    },
-    nodesFetched: (state, action: PayloadAction<NodeResponseDto[]>) => {
-      state.nodes = action.payload;
     },
     invoicePaid: (state) => {
       state.invoice = undefined;
@@ -65,7 +102,6 @@ export const {
   initApp,
   socketChanged,
   invoiceFetched,
-  nodesFetched,
   invoicePaid,
   nodeInfoChanged,
   validPubKeyEntered,
@@ -81,3 +117,5 @@ export const selectInvoicePaid = (state: RootState) => state.global.invoicePaid;
 export const selectNodes = (state: RootState) => state.global.nodes;
 export const selectFee = (state: RootState) => state.global.fee;
 export const selectIsMaintenanceMode = (state: RootState) => state.global.isMaintenanceMode;
+export const selectLoading = (state: RootState) =>
+  state.global.fetchSuggestionsStatus === FETCH_SUGGESTIONS_STATUS.LOADING;

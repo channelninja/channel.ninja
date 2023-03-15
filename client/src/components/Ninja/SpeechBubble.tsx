@@ -2,7 +2,6 @@ import { QRCodeSVG } from 'qrcode.react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { invoicePaid, selectFee, selectIsMaintenanceMode } from '../../redux/global-slice';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
-import { CHANNEL_NINJA_PUB_KEY } from '../../utils/global-constants';
 import { useTimeoutTooltip } from './hooks/use-timeout-tooltip';
 import { NinjaText } from './ninja-text.enum';
 import { selectNinjaText } from './ninja-text.selector';
@@ -59,17 +58,14 @@ const SpeechBubble = () => {
           </p>
         );
       case TooltipKey.NINJA_CLICKED:
-        return <p>Node public key copied!</p>;
+        return <p>Copied!</p>;
       case TooltipKey.NINJA_HOVERED:
         return (
           <p>
             Connect to my node!
             <br />
             <br />
-            {CHANNEL_NINJA_PUB_KEY}
-            <br />
-            <br />
-            Click to copy pubkey.
+            Click to copy my node's address.
           </p>
         );
       case TooltipKey.QR_CODE_CLICKED:
@@ -84,6 +80,19 @@ const SpeechBubble = () => {
         return <p>Channel opened successfully.</p>;
       case TooltipKey.CHANNEL_OPENED_FAIL:
         return <p>Could not open channel.</p>;
+      case TooltipKey.NODE_HAS_NO_PEERS:
+        return (
+          <p>
+            I couldn't find enough info about your node. Try connecting to me first.
+            <br />
+            <br />
+            Hover me for more info
+          </p>
+        );
+      case TooltipKey.NODE_NOT_FOUND:
+        return <p>I couldn't find your node.</p>;
+      case TooltipKey.ERROR_FETCHING_SUGGESTIONS:
+        return <p>I couldn't find any suggestions. Please try again later.</p>;
       case TooltipKey.NO_WEBLN_PUBKEY:
         return <p>Your selected WebLN account doesn't have a pubkey.</p>;
       case TooltipKey.NO_WEBLN_EXTENSION:

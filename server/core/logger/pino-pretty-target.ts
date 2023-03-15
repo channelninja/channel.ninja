@@ -11,7 +11,7 @@ const pinoPrettyTarget = (opts: Record<string, any>) =>
         return `${req.method} ${req.url} ${res.statusCode} - ${log.responseTime}ms`;
       }
 
-      return `${log[messageKey]}`;
+      return `[${log.namespace}]: ${log[messageKey]}`;
     },
   });
 
