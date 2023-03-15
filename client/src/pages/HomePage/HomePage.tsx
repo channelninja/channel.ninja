@@ -4,6 +4,7 @@ import Form from '../../components/Form';
 import ListItem from '../../components/ListItem';
 import Ninja from '../../components/Ninja';
 import { useTimeoutTooltip } from '../../components/Ninja/hooks/use-timeout-tooltip';
+import { TooltipType } from '../../components/Ninja/tooltip-slice';
 import { TooltipKey } from '../../components/Ninja/tooltip.enum';
 import Node from '../../components/Node';
 import NodeInfo from '../../components/NodeInfo';
@@ -21,14 +22,6 @@ import {
 } from '../../redux/global-slice';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import './home.css';
-
-export enum TooltipState {
-  INIT = 'INIT',
-  VALID_PUB_KEY_ENTERED = 'VALID_PUB_KEY_ENTERED',
-  INVALID_PUB_KEY_ENTERED = 'INVALID_PUB_KEY_ENTERED',
-  NINJA_HOVERED = 'NINJA_HOVERED',
-  NINJA_CLICKED = 'NINJA_CLICKED',
-}
 
 const HomePage = () => {
   const socket = useSockets();
@@ -105,14 +98,14 @@ const HomePage = () => {
         const nodeInfo = await LndService.getNodeInfo(pubKey);
 
         if (!nodeInfo) {
-          setTooltip(TooltipKey.INVALID_PUB_KEY);
+          setTooltip(TooltipKey.INVALID_PUB_KEY, 10_000, TooltipType.ERROR);
           return;
         }
 
         dispatch(nodeInfoChanged(nodeInfo));
         dispatch(validPubKeyEntered(pubKey));
       } catch (error) {
-        setTooltip(TooltipKey.INVALID_PUB_KEY);
+        setTooltip(TooltipKey.INVALID_PUB_KEY, 10_000, TooltipType.ERROR);
         return;
       }
 

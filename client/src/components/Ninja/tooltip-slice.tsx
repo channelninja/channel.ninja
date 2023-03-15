@@ -6,7 +6,7 @@ export enum TooltipType {
   INFO = 'info',
 }
 
-export type TooltipState = {
+type TooltipState = {
   key: TooltipKey | undefined;
   type?: TooltipType;
 };

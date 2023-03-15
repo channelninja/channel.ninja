@@ -50,7 +50,14 @@ const SpeechBubble = () => {
   const tooltip = useMemo(() => {
     switch (tooltipKey) {
       case TooltipKey.INVALID_PUB_KEY:
-        return <p>Node could not be found. Try again.</p>;
+        return (
+          <p>
+            Node could not be found.
+            <br />
+            <br />
+            Make sure you entered a valid public key and your node has at least one public channel.
+          </p>
+        );
       case TooltipKey.NINJA_CLICKED:
         return <p>Node public key copied!</p>;
       case TooltipKey.NINJA_HOVERED:
