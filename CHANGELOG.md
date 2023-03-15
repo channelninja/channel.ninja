@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.8](https://github.com/channelninja/channel.ninja/compare/v1.4.7...v1.4.8) (2023-03-15)
+
+
+### Bug Fixes
+
+* add more info when node could not be found ([9779a0a](https://github.com/channelninja/channel.ninja/commit/9779a0af1e16b70049b1444282be3b9961277519))
+
 ## [1.4.7](https://github.com/channelninja/channel.ninja/compare/v1.4.6...v1.4.7) (2023-03-11)
 
 
