@@ -2317,10 +2317,10 @@
   dependencies:
     uuid "8.3.2"
 
-"@nestjs/websockets@^9.3.9":
-  version "9.3.9"
-  resolved "https://registry.yarnpkg.com/@nestjs/websockets/-/websockets-9.3.9.tgz#d9bb804784752fe429ba9328001a40fb4eae07f5"
-  integrity sha512-HbusWv+6rKtOLnppLZDCq5KfGMIVuItp1RPBzb/ObdMvDR5/TfMThSTtMVfTi8xnlBb7N36poeUX88oyJXQ5Iw==
+"@nestjs/websockets@^9.3.12":
+  version "9.3.12"
+  resolved "https://registry.yarnpkg.com/@nestjs/websockets/-/websockets-9.3.12.tgz#684e582dda72d45574dc235d8b8ab86c37ddf87c"
+  integrity sha512-DB0HubjjzOgoPrBdCt2MHhAc3OKBQSODdDhx336TVTGZt5utYV6rLNSaGShWK696fk0fuyLSBImT9PE7igh9tQ==
   dependencies:
     iterare "1.2.1"
     object-hash "3.0.0"
