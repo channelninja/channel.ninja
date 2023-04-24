@@ -109,7 +109,7 @@
     "lint-staged": ">=13",
     "openapi-typescript-codegen": "^0.23.0",
     "pino-pretty": "^10.0.0",
-    "prettier": "^2.8.4",
+    "prettier": "^2.8.8",
     "prettier-plugin-tailwindcss": "^0.2.4",
     "react-scripts": "5.0.1",
     "rimraf": "^4.4.0",
