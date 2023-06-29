@@ -1,10 +1,15 @@
 <p align="center">
-  <a href="https://channel.ninja" target="blank"><img src="https://channel.ninja/logo192.png" width="100" alt="channel.ninja Logo" /></a>
+  <img src="https://raw.githubusercontent.com/channelninja/channel.ninja/main/client/public/logo192.png" width="100" alt="channel.ninja Logo" />
 </p>
 
 # channel.ninja
 
-<a href='https://channel.ninja'>channel.ninja</a> is a tool to recommend channel partners for your lightning node.
+channel.ninja is a tool to recommend channel partners for your lightning node.
+
+# channel.ninja is gone
+
+I don't have the time and energy right now to keep maintaining this side project.
+If you found it useful and run your own LND node, just clone it and run it yourself :)
 
 ## Installation
 
